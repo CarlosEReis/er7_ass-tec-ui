@@ -1,0 +1,57 @@
+<po-page-default p-title="Novo Cliente: {{clienteForm.get('nome')?.value}}" [p-actions]="acoes">
+
+  <hr />
+  <form [formGroup]="clienteForm" (ngSubmit)="salvar()">
+      
+    <div class="po-row">
+      <po-input p-label="Nome" name="nome" formControlName="nome" id="nome" p-required="true" [p-show-required]="true" [p-maxlength]="40" class="po-md-5" p-placeholder="Digite aqui o nome"></po-input>
+      <po-input p-label="Fantásia" name="fantasia" formControlName="fantasia" id="fantasia" [p-maxlength]="20" class="po-md-4" p-placeholder="Digite aqui a fantásia"></po-input>
+      <po-select p-label="Tipo Pess." #tipo name="tipoPessoa" formControlName="tipoPessoa" [p-options]="tipoPessoa" id="tipo-pessoa" [p-required]="true" class="po-md-1" p-placeholder="Selecione"></po-select>
+      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'FISICA' || clienteForm.get('tipoPessoa')?.value === null" p-label="CPF" name="documento" formControlName="documento" id="cpf" p-required="true" [p-show-required]="true" [p-maxlength]="15" class="po-md-2" p-placeholder="Digite o CPF"></po-input>
+      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'JURIDICA'"  p-label="CNPJ" name="documento" formControlName="documento" id="cnpj" p-required="true" [p-show-required]="true" [p-maxlength]="18" class="po-md-2" p-placeholder="Digite o CNPJ"></po-input>
+      <!-- p-mask está impossibilitando o uso de testes no Selenium IDE-->
+      <!-- Máscara para CPF p-mask="999.999.999-99" -->
+      <!-- Máscara para CNPJ p-mask="99.999.999/9999-99" -->
+    </div>
+  
+    <div class="po-row po-mt-2">
+      <po-select p-label="Tipo Cliente" name="tipoCliente" formControlName="tipoCliente" [p-options]="tipoCliente" id="tipo-cliente" [p-required]="true" [p-show-required]="true" class="po-md-2" p-placeholder="Selecione"></po-select>
+      <po-input p-label="Insc. Estadual" name="inscricaoEstadual" formControlName="inscricaoEstadual" id="inscricao-estadual" [p-maxlength]="18" class="po-md-2" p-placeholder="Inscrição Estadual"></po-input>
+      <po-input p-label="Contribuinte" name="contribuinte" formControlName="contribuinte" id="contribuinte" class="po-md-1" p-placeholder="Selecione"></po-input>
+      <po-input p-disabled="true" p-label="Tabela de Preço" name="tabelaPreco" formControlName="tabelaPreco" id="tabela-preco" class="po-md-2" p-placeholder="Selecione"></po-input>
+      <po-email p-label="E-mail" name="email" formControlName="email" id="email" p-required="true" [p-show-required]="true" [p-maxlength]="40" class="po-md-3" p-placeholder="Digite o e-mail"></po-email>
+      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'FISICA' || clienteForm.get('tipoPessoa')?.value === null" p-label="Celular" name="celular" formControlName="telefone" id="celular" p-required="true" [p-show-required]="true" [p-maxlength]="15" p-icon="po-icon po-icon-device-smartphone" class="po-md-2" p-placeholder="Digite o telefone"></po-input>
+      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'JURIDICA'" p-label="Telefone" name="telefone" formControlName="telefone" id="telefone" p-required="true" [p-show-required]="true" [p-maxlength]="15" p-icon="po-icon po-icon-telephone" class="po-md-2" p-placeholder="Digite o telefone"></po-input>
+      <!-- p-mask está impossibilitando o uso de testes no Selenium IDE-->
+      <!-- Máscara para telefone p-mask="(99) 99999-9999"-->
+    </div>
+      
+    <hr>
+  
+    <po-tabs>
+      <po-tab p-label="Endereço" [p-active]="true">
+  
+        <div class="po-row po-mt-2" formGroupName="endereco">
+          <po-input p-label="CEP" name="cep" formControlName="cep" id="cep" p-required="true" [p-show-required]="true" p-icon="po-icon po-icon-map" class="po-md-2" p-placeholder="Digite o CEP"></po-input>
+          <!-- p-mask está impossibilitando o uso de testes no Selenium IDE -->
+          <!-- Máscara para CEP p-mask="99999-999" -->
+          <po-input p-label="Nº" name="numero" formControlName="numero" id="numero" class="po-md-1" p-placeholder="Número"></po-input>
+          <po-input p-label="Rua" name="logradouro" formControlName="logradouro" id="rua" class="po-md-3" p-placeholder="Digite o endereço"></po-input>
+          <po-input p-label="Complemento" name="complemento" formControlName="complemento" id="complemento" class="po-md-1" p-placeholder="Complemento"></po-input>
+          <po-input p-label="Bairro" name="bairro" formControlName="bairro" id="bairro" p-required="true" readonly class="po-md-2" p-placeholder="Digite o Bairro"></po-input>
+          <po-input p-label="Cidade" name="cidade" formControlName="cidade" id="cidade" p-required="true" readonly class="po-md-2" p-placeholder="Digite a Cidade"></po-input>
+          <po-input p-label="Estado" name="estado" formControlName="estado" id="estado" p-required="true" readonly class="po-md-1" p-placeholder="Digite o Estado"></po-input>
+        </div>
+
+      </po-tab>
+
+      <po-tab p-label="Contatos">
+
+      </po-tab>
+    </po-tabs>
+
+  </form>
+
+</po-page-default>
+
+  
