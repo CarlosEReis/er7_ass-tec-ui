@@ -1,9 +1,51 @@
-<div class="po-wrapper">
+<router-outlet></router-outlet>
+<!--<div class="po-wrapper">
   <po-toolbar p-title="AppName"></po-toolbar>
 
   <po-menu [p-menus]="menus"></po-menu>
 
   <po-page-default p-title="AppName">
     <p> AppName page </p>
+  </po-page-default> 
+  <po-page-default p-title="Novo Cliente">
+  
+    <hr />
+
+    <div class="po-row">
+      <po-input p-label="Nome" id="nome" class="po-md-5" p-placeholder="Digite aqui o nome"></po-input>
+      <po-input p-label="Fantásia" id="fantasia" class="po-md-4" p-placeholder="Digite aqui a fantásia"></po-input>
+      <po-input p-label="Tipo Pess." id="tipo-pessoa" class="po-md-1" p-placeholder="Selecione"></po-input>
+      <po-input p-label="CPF" id="cpf" class="po-md-2" p-placeholder="Digite o CPF"></po-input>
+      <po-input p-label="CNPJ" id="cnpj" class="po-md-2"></po-input> 
+    </div>
+
+    <div class="po-row">
+      <po-input p-label="Tipo Cli." id="tipo-cliente" class="po-md-2" p-placeholder="Selecione"></po-input>
+      <po-input p-label="Insc. Estadual" id="inscricao-estadual" class="po-md-2" p-placeholder="Inscrição Estadual"></po-input>
+      <po-input p-label="Contribuinte" id="contribuinte" class="po-md-1" p-placeholder="Selecione"></po-input>
+      <po-input p-label="Tabela de Preço" id="tabela-preco" class="po-md-2" p-placeholder="Selecione"></po-input>
+      <po-input p-label="E-mail" id="email" class="po-md-3" p-placeholder="Digite o e-mail"></po-input>
+      <po-input p-label="Telefone" id="telefone" class="po-md-2" p-placeholder="Digite o telefone"></po-input>
+    </div>
+    
+    <hr>
+
+    <po-tabs>
+      <po-tab p-label="Endereço" [p-active]="true">
+
+        <div class="po-row po-mt-2">
+          <po-input p-label="CEP" id="cep" class="po-md-2" p-placeholder="Digite o CEP"></po-input>
+          <po-input p-label="Nº" id="numero" class="po-md-1" p-placeholder="Número"></po-input>
+          <po-input p-label="Rua" id="rua" class="po-md-3" p-placeholder="Digite o endereço"></po-input>
+          <po-input p-label="Complemento" id="complemento" class="po-md-1" p-placeholder="Complemento"></po-input>
+          <po-input p-label="Bairro" id="bairro" class="po-md-2" p-placeholder="Digite o Bairro"></po-input>
+          <po-input p-label="Cidade" id="cidade" class="po-md-2" p-placeholder="Digite a Cidade"></po-input>
+          <po-input p-label="Estado" id="estado" class="po-md-1" p-placeholder="Digite o Estado"></po-input>
+        </div>
+
+      </po-tab>
+      <po-tab p-label="Contatos"></po-tab>
+    </po-tabs>
+
   </po-page-default>
-</div>
+</div> -->
