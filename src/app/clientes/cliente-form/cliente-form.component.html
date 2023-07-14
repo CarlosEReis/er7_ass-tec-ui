@@ -1,4 +1,4 @@
-<po-page-default p-title="Novo Cliente: {{clienteForm.get('nome')?.value}}" [p-actions]="acoes">
+<po-page-default p-title="{{ clienteForm.get('id')?.value === null ? 'Novo' : 'Editando' }} Cliente 📝: {{clienteForm.get('nome')?.value}}" [p-actions]="acoes">
 
   <hr />
   <form [formGroup]="clienteForm" (ngSubmit)="salvar()">
@@ -53,5 +53,3 @@
   </form>
 
 </po-page-default>
-
-  
