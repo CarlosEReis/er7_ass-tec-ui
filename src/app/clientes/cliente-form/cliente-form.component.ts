@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PoNotificationService, PoPageAction, PoSelectOption } from '@po-ui/ng-components';
 import { ClientesService } from '../clientes.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-cliente-form',
@@ -16,26 +17,40 @@ export class ClienteFormComponent implements OnInit {
   tipoCliente!: PoSelectOption[];
   
   constructor(
-    private formBuilder: FormBuilder, 
-    private clientesSevice: ClientesService, 
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute,
+    private clienteService: ClientesService, 
     private poNotificationService: PoNotificationService) {}
 
   ngOnInit(): void {
+    const clienteId = this.activatedRoute.snapshot.params['id'];
+
+    if (clienteId) {
+      this.buscarCliente(clienteId);
+    }
+
     this.acoes = this.carregaAcoes();
     this.clienteForm = this.configuraForm();
     this.tipoPessoa = this.carregaTipoPessoa();
     this.tipoCliente = this.carregaTipoCliente();
-    
+  }
+
+  private buscarCliente(codigo: number) : void {
+    this.clienteService.buscar(codigo)
+      .then((cliente: any) => this.carregaCliente(cliente))
+      .catch();
+  }
+
+  private carregaCliente(cliente: any) {
+    this.clienteForm.patchValue(cliente);
   }
 
   public salvar() : void{
-
-    console.log(this.clienteForm.value);
-    
-
-    this.clientesSevice.adicionar(this.clienteForm.value)
+    this.clienteService.adicionar(this.clienteForm.value)
     .then((cliente: any)=>{
       this.poNotificationService.success({message: `Cliente ${cliente.nome} adicionado com sucesso.`})
+      this.router.navigate(['clientes']);
     })
     .catch((erro: any) => {
       this.poNotificationService.error({message: `Não foi possível cadastrar o clientes`})
@@ -48,7 +63,7 @@ export class ClienteFormComponent implements OnInit {
     ]
   }
 
-  public configuraForm() : FormGroup {
+  private configuraForm() : FormGroup {
     return this.formBuilder.group({
       id: [],
       nome: [ , Validators.required],
@@ -91,4 +106,3 @@ export class ClienteFormComponent implements OnInit {
   }
     
 }
-
