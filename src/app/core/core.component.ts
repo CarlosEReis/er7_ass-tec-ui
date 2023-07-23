@@ -10,7 +10,8 @@ export class CoreComponent {
 
   readonly menus: Array<PoMenuItem> = [
     { label: 'Home', link: '/' },
-    { label: 'Clientes', link: '/clientes' }
+    { label: 'Clientes', link: '/clientes' },
+    { label: 'Chamados', link: '/chamados' }
   ];
 
   private onClick() {

@@ -13,6 +13,11 @@ export const routes: Routes = [
           import('../clientes/clientes.module').then((m) => m.ClientesModule)
       },
       {
+        path: 'chamados',
+        loadChildren: () =>
+          import('../chamados/chamados.module').then((m) => m.ChamadosModule)
+      },
+      {
         path: '',
         redirectTo: 'assistencia',
         pathMatch: 'full',
