@@ -3,21 +3,25 @@ import { CommonModule } from '@angular/common';
 
 import { ChamadosRoutingModule } from './chamados-routing.module';
 import { ChamadosPesquisaComponent } from './chamados-pesquisa/chamados-pesquisa.component';
-import { PoModule, PoNotificationModule, PoNotificationService } from '@po-ui/ng-components';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PoFieldModule, PoModule, PoNotificationModule, PoNotificationService } from '@po-ui/ng-components';
+import { ChamadoFormComponent } from './chamado-form/chamado-form.component';
 
 
 @NgModule({
   declarations: [
-    ChamadosPesquisaComponent
+    ChamadosPesquisaComponent,
+    ChamadoFormComponent
   ],
   imports: [
     CommonModule,
     ChamadosRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
 
     PoModule,
-    PoNotificationModule
+    PoFieldModule,
+    
   ]
 })
 export class ChamadosModule { }
