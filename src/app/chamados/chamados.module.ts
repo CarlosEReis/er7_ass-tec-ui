@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { ChamadosRoutingModule } from './chamados-routing.module';
 import { ChamadosPesquisaComponent } from './chamados-pesquisa/chamados-pesquisa.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PoFieldModule, PoModule, PoNotificationModule, PoNotificationService } from '@po-ui/ng-components';
+
+import { PoFieldModule, PoModule, PoNotificationModule, PoNotificationService, PoStepperModule } from '@po-ui/ng-components';
 import { ChamadoFormComponent } from './chamado-form/chamado-form.component';
 
 
@@ -21,7 +22,7 @@ import { ChamadoFormComponent } from './chamado-form/chamado-form.component';
 
     PoModule,
     PoFieldModule,
-    
+    PoStepperModule
   ]
 })
 export class ChamadosModule { }

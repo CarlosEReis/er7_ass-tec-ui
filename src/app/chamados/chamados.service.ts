@@ -26,7 +26,13 @@ export class ChamadosService {
 
   public criar(chamado: any) : Promise<any> {
     const headers = new HttpHeaders()
-    .append('Content-Type', 'application/json')
-    return firstValueFrom(this.http.post(this.chamadosURL, chamado,{headers}));
+    .append('Content-Type', 'application/json');
+    return firstValueFrom(this.http.post(this.chamadosURL, chamado,{ headers }));
+  }
+
+  public atualiza(chamado: any) : Promise<any> {
+    const headers = new HttpHeaders()
+    .append('Content-Type', 'application/json');
+    return firstValueFrom(this.http.put(`${this.chamadosURL}/${chamado.id}`, chamado, { headers }))
   }
 }

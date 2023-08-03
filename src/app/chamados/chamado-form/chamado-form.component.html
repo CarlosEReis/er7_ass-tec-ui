@@ -1,15 +1,30 @@
-<po-page-default p-title="Novo Chamado Técnico" [p-actions]="acoesPagina">
+<po-page-default [p-title]="tituloPagina" [p-actions]="acoesPagina">
   <hr />
+
+
+
+  <div class="po-row">
+    <div class="po-md-12 po-mt-5 po-mb-4">
+
+      <po-stepper [p-step-size]="64" [p-step-icons]="true" [p-steps]="status"> 
+      </po-stepper>
+
+    </div>
+  </div>
+
   <form [formGroup]="formChamado">
     <div class="po-row">
       <po-input p-label="Chamado" name="chamado" formControlName="id" class="po-md-1"></po-input>
       <po-input p-label="Criação" name="dataCriacao" formControlName="dataCriacao" class="po-md-2"></po-input>
       
       <div class="po-md-9" formGroupName="cliente">
-        <po-combo class="po-md-9"
+
+        <po-input p-label="Cliente" name="nome-cliente" formControlName="nome" class="po-md-9" *ngIf="isEditandoChamado()"></po-input>
+
+        <po-combo class="po-md-9" *ngIf="!isEditandoChamado()"
           p-label="Cliente"
           p-placeholder="Digite no mínimo 5 caracteres"
-          name="nome"
+          name="nome-cliente"
           formControlName="id"
           (p-change)="onChangeCliente($event)"
           (ngModelChange)="comboClienteValue = $event"
@@ -17,8 +32,7 @@
           [p-options]="opcoesClientes" 
           [p-emit-object-value]="false"
           [p-clean]="true"
-          [p-cache]="false"
-          >
+          [p-cache]="false">
 
           <ng-template p-combo-option-template let-option>
             <div class="po-row">
@@ -42,10 +56,10 @@
       <po-tab p-label="Itens do Chamado" [p-active]="true">
 
         <div class="po-row po-mb-1">
-            <po-button p-label="Ocorrência" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="modal.open()"></po-button>
+            <po-button p-label="Ocorrência" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="adicionarOcorrencia()"></po-button>
         </div>
 
-        <po-table class="po-md-12 po-pl-0 po-pr-0" [p-columns]="colunasOcorrencias" [p-items]="formChamado.get('itens')?.value" [p-height]="200" [p-striped]="true" [p-hide-columns-manager]="true">
+        <po-table class="po-md-12 po-pl-0 po-pr-0" [p-columns]="colunasOcorrencias" [p-items]="formChamado.get('itens')?.value"  [p-striped]="true" [p-hide-columns-manager]="true">
         
           <ng-template p-table-column-template [p-property]="'descricao'" let-descricao>
             <span>{{ descricao | slice:0:60 }} ...</span>
@@ -91,8 +105,8 @@
 <po-modal 
   #modal 
   p-size="md"
-  p-title="Adicionar Ocorrência"
-  [p-primary-action]="adicionarOcorrencia()"
+  [p-title]="tituloModalOcorrencia"
+  [p-primary-action]="salvarOcorrencia()"
   [p-secondary-action]="fechar()">
 
   <form [formGroup]="formOcorrencia">
