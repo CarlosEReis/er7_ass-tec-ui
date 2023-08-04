@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PoMenuItem } from '@po-ui/ng-components';
+import { environment } from 'src/environments/environment.development';
 
 @Component({
   selector: 'app-core',
@@ -8,10 +9,12 @@ import { PoMenuItem } from '@po-ui/ng-components';
 })
 export class CoreComponent {
 
+  readonly appNomeDesc = environment.appNomeDesc;
+
   readonly menus: Array<PoMenuItem> = [
-    { label: 'Home', link: '/' },
-    { label: 'Clientes', link: '/clientes' },
-    { label: 'Chamados', link: '/chamados' }
+    { label: 'Home', link: '/', icon: 'po-icon po-icon-chart-area', shortLabel: 'Home' },
+    { label: 'Clientes', link: '/clientes', icon: 'po-icon po-icon-handshake', shortLabel: 'Clientes' },
+    { label: 'Chamados', link: '/chamados', icon: 'po-icon po-icon-news', shortLabel: 'Chamados' }
   ];
 
   private onClick() {

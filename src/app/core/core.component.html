@@ -1,7 +1,29 @@
 <div class="po-wrapper">
-  <po-toolbar p-title="AppName"></po-toolbar>
+  <po-toolbar p-title="{{ appNomeDesc }}"></po-toolbar>
 
-  <po-menu [p-menus]="menus"></po-menu>
+  <po-menu [p-menus]="menus"
+    [p-filter]="true"
+    [p-collapsed]="false">
+
+    <ng-template p-menu-header-template class="center">
+      <po-container [p-height]="165" class="po-text-center" [p-no-border]="true">
+
+        <div class="po-row">
+
+          <po-avatar class="po-text-center"
+            p-src="./assets/img/000010.jpg"
+            id="avatar">
+          </po-avatar>
+        </div>
+
+        <div >
+          <div class="po-font-subtitle po-text-center">Carlos ER7</div>
+          <div class="po-text-center">carlos.er7@gmail.com</div>
+        </div>
+        
+      </po-container>
+    </ng-template>
+  </po-menu>
 
   <router-outlet></router-outlet>
 
