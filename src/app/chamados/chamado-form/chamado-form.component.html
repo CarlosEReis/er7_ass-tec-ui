@@ -1,0 +1,126 @@
+<po-page-default [p-title]="tituloPagina" [p-actions]="acoesPagina">
+  <hr />
+
+
+
+  <div class="po-row">
+    <div class="po-md-12 po-mt-5 po-mb-4">
+
+      <po-stepper [p-step-size]="64" [p-step-icons]="true" [p-steps]="status"> 
+      </po-stepper>
+
+    </div>
+  </div>
+
+  <form [formGroup]="formChamado">
+    <div class="po-row">
+      <po-input p-label="Chamado" name="chamado" formControlName="id" class="po-md-1"></po-input>
+      <po-input p-label="Criação" name="dataCriacao" formControlName="dataCriacao" class="po-md-2"></po-input>
+      
+      <div class="po-md-9" formGroupName="cliente">
+
+        <po-input p-label="Cliente" name="nome-cliente" formControlName="nome" class="po-md-9" *ngIf="isEditandoChamado()"></po-input>
+
+        <po-combo class="po-md-9" *ngIf="!isEditandoChamado()"
+          p-label="Cliente"
+          p-placeholder="Digite no mínimo 5 caracteres"
+          name="nome-cliente"
+          formControlName="id"
+          (p-change)="onChangeCliente($event)"
+          (ngModelChange)="comboClienteValue = $event"
+          (p-input-change)="pesquisarCliente($event)"
+          [p-options]="opcoesClientes" 
+          [p-emit-object-value]="false"
+          [p-clean]="true"
+          [p-cache]="false">
+
+          <ng-template p-combo-option-template let-option>
+            <div class="po-row">
+              <po-avatar class="po-sm-2 po-md-3 po-lg-1" p-size="sm"></po-avatar> 
+
+              <div class="po-sm-10 po-md-9 po-lg-11">
+                <div class="po-font-text-large-bold">{{ option.label }}</div>
+                <div class="po-font-text-smaller">Código: {{ option.value }}</div>
+              </div>
+            </div>
+          </ng-template>
+        </po-combo> 
+
+        <po-input class="po-md-3" p-label="CPF/CNPJ" name="documento" formControlName="documento"  ></po-input>
+      </div>
+    </div>
+
+    <hr />
+
+    <po-tabs>
+      <po-tab p-label="Itens do Chamado" [p-active]="true">
+
+        <div class="po-row po-mb-1">
+            <po-button p-label="Ocorrência" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="adicionarOcorrencia()"></po-button>
+        </div>
+
+        <po-table class="po-md-12 po-pl-0 po-pr-0" [p-columns]="colunasOcorrencias" [p-items]="formChamado.get('itens')?.value"  [p-striped]="true" [p-hide-columns-manager]="true">
+        
+          <ng-template p-table-column-template [p-property]="'descricao'" let-descricao>
+            <span>{{ descricao | slice:0:60 }} ...</span>
+          </ng-template>
+        </po-table>
+
+      </po-tab>
+
+      <po-tab p-label="Transporte">
+        <div formGroupName="cliente">
+          <div formGroupName="endereco">
+
+            <br>
+
+            <div class="po-row">
+              <po-input class="po-md-2"  formControlName="cep" p-label="CEP" name="cep"></po-input>
+              <po-input class="po-md-9" formControlName="logradouro" p-label="Endereço" name="endereco"></po-input>
+              <po-input class="po-md-1" formControlName="numero" p-label="Número" name="numero"></po-input>
+            </div>
+            <div class="po-row">
+              <po-input class="po-md-7"  formControlName="complemento" p-label="Complemento" name="complemento"></po-input>
+              <po-input class="po-md-4"  formControlName="cidade" p-label="Cidade" name="cidade"></po-input>
+              <po-input class="po-md-1"  formControlName="estado" p-label="Estado" name="estado"></po-input>
+            </div>
+          </div>
+        </div>
+      </po-tab>
+
+      <po-tab p-label="Contatos">
+        <div class="po-row">
+          <po-input p-label="Nome Contato" class="po-md-4"></po-input>
+          <po-input p-label="Departamento" class="po-md-2"></po-input>
+          <po-input p-label="E-mail" class="po-md-2"></po-input>
+          <po-input p-label="Tel / Cel" class="po-md-2"></po-input>
+          <po-input p-label="WhatsApp / Telegram" class="po-md-2"></po-input>
+        </div>
+      </po-tab>
+
+    </po-tabs>
+  </form>
+</po-page-default>
+
+<po-modal 
+  #modal 
+  p-size="md"
+  [p-title]="tituloModalOcorrencia"
+  [p-primary-action]="salvarOcorrencia()"
+  [p-secondary-action]="fechar()">
+
+  <form [formGroup]="formOcorrencia">
+    <div class="po-row">
+      <po-input name="sku" formControlName="sku" p-label="SKU" class="po-md-2"></po-input>
+      <po-input name="descProd" formControlName="descProd" p-label="Descrição" class="po-md-5"></po-input>
+      <po-input name="serial" formControlName="serial" p-label="Serial" class="po-md-5"></po-input>
+    </div>
+    
+    <br>
+    
+    <div class="po-row">
+      <po-textarea name="descricao" formControlName="descricao" class="po-md-12" [p-rows]="6" p-label="Ocorrência"></po-textarea>
+    </div>
+  </form>
+
+</po-modal>
