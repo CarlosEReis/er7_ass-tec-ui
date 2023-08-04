@@ -1,9 +1,35 @@
 /* You can add global styles to this file, and also import other style files */
 
+.po-menu-header-container-logo {
+    margin-top: 1rem;
+}
+
+.po-menu-logo{
+    margin: auto;
+}
+
+#usuario-container > .po-container {
+    background-color: #0057A8 !important;
+}
+
+#usuario-info {
+    color: #fff;
+}
+
 #avatar {
     margin: auto;
 }
 
+#avatar > .po-avatar {
+    height: 94px;
+    width: 94px;
+    border: solid 4px #bfd7ee;
+}
+
 .po-menu-filter {
     box-shadow: none;
+}
+
+.po-tab-button-active {
+    background-color: var(--color-brand-01-lightest);
 }

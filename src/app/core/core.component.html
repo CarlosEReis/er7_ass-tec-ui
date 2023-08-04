@@ -3,20 +3,20 @@
 
   <po-menu [p-menus]="menus"
     [p-filter]="true"
-    [p-collapsed]="false">
+    [p-collapsed]="false"
+    p-logo="./assets/logo/po_white.png">
 
     <ng-template p-menu-header-template class="center">
-      <po-container [p-height]="165" class="po-text-center" [p-no-border]="true">
+      <po-container [p-height]="195" class="po-text-center" [p-no-border]="true" id="usuario-container">
 
         <div class="po-row">
-
           <po-avatar class="po-text-center"
-            p-src="./assets/img/000010.jpg"
+            p-src="./assets/img/foto-carlos.jpg"
             id="avatar">
           </po-avatar>
         </div>
 
-        <div >
+        <div id="usuario-info">
           <div class="po-font-subtitle po-text-center">Carlos ER7</div>
           <div class="po-text-center">carlos.er7@gmail.com</div>
         </div>
