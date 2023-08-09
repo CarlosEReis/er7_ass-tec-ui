@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PoNotificationService, PoTableColumn } from '@po-ui/ng-components';
+import { PoNotificationService, PoPageAction, PoTableColumn } from '@po-ui/ng-components';
 import { ChamadosService } from '../chamados.service';
 import { Router } from '@angular/router';
 
@@ -12,7 +12,8 @@ export class ChamadosPesquisaComponent implements OnInit{
   
   chamados!: any[];
   pesquisaNomeCliente!: string;
-  
+  acoes!: PoPageAction[];
+
   colunas!: PoTableColumn[];
 
   constructor(
@@ -23,6 +24,7 @@ export class ChamadosPesquisaComponent implements OnInit{
 
   ngOnInit(): void {
     this.carregaChamados();
+    this.carregarAcoes();
     this.colunas = this.carregaColunas();
   }
 
@@ -34,6 +36,16 @@ export class ChamadosPesquisaComponent implements OnInit{
         (erro) => this.poNotificationService.error({message: 'Não foi possível carregar os clientes.'}))
   }
 
+  private carregarAcoes() : void  {
+    this.acoes = [
+      { label: 'Novo', icon: 'po-icon po-icon-plus', action: this.novoChamado.bind(this) }
+    ]
+  }
+
+  private novoChamado() : void {
+    this.rotuer.navigate(['chamado', 'novo']);
+  }
+  
   public pesquisar() {
     if (this.pesquisaNomeCliente && this.pesquisaNomeCliente.length > 3) {
       this.carregaChamados();
