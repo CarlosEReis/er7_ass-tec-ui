@@ -38,12 +38,12 @@ export class ChamadosPesquisaComponent implements OnInit{
 
   private carregarAcoes() : void  {
     this.acoes = [
-      { label: 'Novo', icon: 'po-icon po-icon-plus', action: this.novoChamado.bind(this) }
+      { label: 'Novo', action: this.novoChamado.bind(this) }
     ]
   }
 
   private novoChamado() : void {
-    this.rotuer.navigate(['chamado', 'novo']);
+    this.rotuer.navigate(['chamados', 'novo']);
   }
   
   public pesquisar() {
