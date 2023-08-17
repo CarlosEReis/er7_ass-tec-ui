@@ -75,10 +75,24 @@ export class ChamadosPesquisaComponent implements OnInit{
             icon: 'po-icon-export' ,
             tooltip: 'Editar' ,
             value: 'editar' 
+          },
+          { 
+            action: (value: any) => { this.geraFichaChamado(value) } ,
+            icon: 'po-icon-document-filled' ,
+            tooltip: 'Ficha' ,
+            value: 'ficha' 
           }
         ]
       }
     ];
+  }
+
+  private geraFichaChamado(value: any) {
+    this.chamadosService.fichaChamadoTecnico(value.id)
+    .then(ficha => {
+      const url = window.URL.createObjectURL(ficha);
+      window.open(url);
+    });
   }
 
   private editarChamado(value: any): void {
@@ -87,7 +101,7 @@ export class ChamadosPesquisaComponent implements OnInit{
 
   private adicionarAcoes(clientes: any[]): any[]  {
     return clientes.map(
-      clientes => ({...clientes, acoes: ['editar']})
+      clientes => ({...clientes, acoes: ['editar', 'ficha']})
     );
   }
 }
