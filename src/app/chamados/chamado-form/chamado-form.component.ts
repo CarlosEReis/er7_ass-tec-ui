@@ -96,6 +96,17 @@ export class ChamadoFormComponent implements OnInit{
 
   }
 
+  private geraFichaChamado() {
+    if (this.isEditandoChamado()) { 
+      const chamadoId = this.formChamado.get('id')?.value;
+      this.chamadoService.fichaChamadoTecnico(chamadoId)
+      .then(ficha => {
+        const url = window.URL.createObjectURL(ficha);
+        window.open(url);
+      });
+    }
+  }
+
   private buscarChamado(codigo: number) : void {
     this.chamadoService.buscarPorId(codigo)
       .then( chamado => this.carregarChamado(chamado))
@@ -131,7 +142,8 @@ export class ChamadoFormComponent implements OnInit{
 
   public carregaAcoes() : void {
     this.acoesPagina = [
-      { label: 'Salvar', action: this.salvarChamado.bind(this) }
+      { label: 'Salvar', action: this.salvarChamado.bind(this) }, 
+      { label: 'Ficha', action: this.geraFichaChamado.bind(this) }
     ];
   }
 
