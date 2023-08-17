@@ -36,7 +36,7 @@ export class ChamadosService {
     return firstValueFrom(this.http.put(`${this.chamadosURL}/${chamado.id}`, chamado, { headers }))
   }
 
-  public fichaChamadoTecnico(idChamado: number) {
+  public fichaChamadoTecnico(idChamado: number) : Promise<Blob> {
     return firstValueFrom(this.http.get(`${this.chamadosURL}/${idChamado}/ficha`, { responseType: 'blob' }));
   }
 }
