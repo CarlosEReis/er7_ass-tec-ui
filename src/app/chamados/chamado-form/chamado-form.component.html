@@ -89,13 +89,26 @@
       </po-tab>
 
       <po-tab p-label="Contatos">
-        <div class="po-row">
-          <po-input p-label="Nome Contato" class="po-md-4"></po-input>
-          <po-input p-label="Departamento" class="po-md-2"></po-input>
-          <po-input p-label="E-mail" class="po-md-2"></po-input>
-          <po-input p-label="Tel / Cel" class="po-md-2"></po-input>
-          <po-input p-label="WhatsApp / Telegram" class="po-md-2"></po-input>
+
+        <div class="po-row po-mb-1">
+          <po-button p-label="Contato" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="vicularContato()"></po-button>
         </div>
+
+        <po-table 
+          class="po-md-12 po-pl-0 po-pr-0" 
+          [p-columns]="colunasContatos"
+          [p-items]="formChamado.get('contatos')?.value"
+          [p-striped]="true"
+          [p-hide-columns-manager]="true">
+
+          <ng-template p-table-column-template p-property="nome" let-nome>
+            <div class="po-table-column-cell po-table-body-ellipsis notranslate">
+              <span class="po-icon po-icon-user"></span> &nbsp;
+              <span>{{nome}}</span>
+            </div>
+          </ng-template>
+
+        </po-table>
       </po-tab>
 
     </po-tabs>
@@ -122,5 +135,27 @@
       <po-textarea name="descricao" formControlName="descricao" class="po-md-12" [p-rows]="6" p-label="Ocorrência"></po-textarea>
     </div>
   </form>
+</po-modal>
 
+<po-modal 
+  #modalContatos
+  p-size="md"
+  p-title="Vincular Contato"
+  [p-primary-action]="vinculaContatoAoChamado()">
+
+  <div class="po-md-12">
+    <font class="po-font-text-large-bold">Vincule pelo menos dois contatos, responsáveis pelo chamado técnico.</font>
+  </div>
+  
+  <div class="po-md-12">
+    <po-table 
+      [p-columns]="colunasContatos"
+      [p-items]="formChamado.get('cliente')?.get('contatos')?.value" 
+      [p-selectable]="true"
+      [p-striped]="true"
+      [p-hide-columns-manager]="true"
+      (p-selected)="selecionaContato($event)"
+      (p-unselected)="deselecionaContato($event)">
+    </po-table>
+  </div> 
 </po-modal>

@@ -66,6 +66,8 @@ export class ChamadoFormComponent implements OnInit{
     this.configuraFormChamado();  
     this.configuraFormOcorrencia();
 
+    this.carregarColunasContatos();
+
     setTimeout(() => {
       this.setarStatus(this.formChamado.get('status')?.value);
     }, 5);
@@ -152,7 +154,13 @@ export class ChamadoFormComponent implements OnInit{
   onChangeCliente(event: any) {
     const cliente = this.filterClientes.find( c => c.id === event);
     this.formChamado.get('cliente')?.get('documento')?.setValue(cliente.documento);
-    this.formChamado.get('cliente')?.get('endereco')?.patchValue(cliente.endereco);
+    this.formChamado.get('cliente')?.get('endereco')?.patchValue(cliente.endereco);   
+    this.formChamado.get('cliente')?.get('contatos')?.setValue(cliente.contatos);
+    console.log(cliente.contatos);
+    console.log(this.formChamado.value);
+    
+    
+    this.modalContatos.open();
   }
 
   public salvarChamado() {
@@ -234,9 +242,11 @@ export class ChamadoFormComponent implements OnInit{
           complemento: [],
           bairro: [],
           cidade: [],
-          estado: []
-        })
+          estado: [],
+        }),
+        contatos: [],
       }),
+      contatos: [[],],
       itens: this.formBuilder.array([])
     })
   }
@@ -327,4 +337,48 @@ export class ChamadoFormComponent implements OnInit{
     console.log(this.formChamado.get('itens')?.value);
   }
 
+
+  // ################ CONTATOS ################
+  @ViewChild("modalContatos", { static: true }) modalContatos!: PoModalComponent;
+
+  colunasContatos!: PoTableColumn[];
+  contatos: any[] = [];
+
+  private carregarColunasContatos() : void {
+    this.colunasContatos = [
+      { label: 'Nome', property: 'nome',type: 'columnTemplate' },
+      { label: 'E-mail', property: 'email' },
+      { label: 'Telefone', property: 'telefone' },
+      { label: 'Departamento', property: 'departamento' },
+    ]
+  }
+
+  public selecionaContato(event: any) {
+    const { $selected, ...contato } = event;
+    this.contatos.push(contato);
+  }
+
+  public deselecionaContato(event: any) {
+    this.contatos = this.contatos.filter(
+      contato => contato.id !== event.id);
+  }
+
+  public vinculaContatoAoChamado() : PoModalAction {
+    return {
+      label: 'Vincular',
+      action: () => {
+        this.formChamado.get('contatos')?.setValue(this.contatos);
+        this.poNotificationService.information({
+          message: `Contatos vinculado ao chamado.`
+        });
+        this.modalContatos.close();
+      }
+    }
+    
+  }
+
+  vicularContato() {
+    //const contatos = this.formChamado.get('cliente')?.value;
+    this.modalContatos.open();
+  }
 }
