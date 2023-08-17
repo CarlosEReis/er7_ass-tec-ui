@@ -35,4 +35,8 @@ export class ChamadosService {
     .append('Content-Type', 'application/json');
     return firstValueFrom(this.http.put(`${this.chamadosURL}/${chamado.id}`, chamado, { headers }))
   }
+
+  public fichaChamadoTecnico(idChamado: number) {
+    return firstValueFrom(this.http.get(`${this.chamadosURL}/${idChamado}/ficha`, { responseType: 'blob' }));
+  }
 }
