@@ -2,11 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ChamadosPesquisaComponent } from './chamados-pesquisa/chamados-pesquisa.component';
 import { ChamadoFormComponent } from './chamado-form/chamado-form.component';
+import { AutenticacaoGuard } from '../guardas/autenticacao.guard';
 
 const routes: Routes = [
-  { path: '', component: ChamadosPesquisaComponent },
-  { path: 'novo', component: ChamadoFormComponent},
-  { path: ':id/edicao', component: ChamadoFormComponent }
+  { path: '', component: ChamadosPesquisaComponent, canActivate: [ AutenticacaoGuard ] },
+  { path: 'novo', component: ChamadoFormComponent, canActivate: [ AutenticacaoGuard ]},
+  { path: ':id/edicao', component: ChamadoFormComponent, canActivate: [ AutenticacaoGuard ] }
 ];
 
 @NgModule({
