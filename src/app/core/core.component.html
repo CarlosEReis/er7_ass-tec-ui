@@ -1,5 +1,14 @@
+
 <div class="po-wrapper">
-  <po-toolbar p-title="{{ appNomeDesc }}"></po-toolbar>
+  
+  <po-toolbar
+    p-title="{{ appNomeDesc }}"  
+    p-actions-icon="po-icon-cart"
+    [p-profile]="profile"
+    [p-profile-actions]="profileActions"
+    >
+  </po-toolbar>
+
 
   <po-menu [p-menus]="menus"
     [p-filter]="true"
@@ -16,9 +25,9 @@
           </po-avatar>
         </div>
 
-        <div id="usuario-info">
-          <div class="po-font-subtitle po-text-center">Carlos ER7</div>
-          <div class="po-text-center">carlos.er7@gmail.com</div>
+        <div id="usuario-info" *ngIf="user$ | async as user">
+          <div class="po-font-subtitle po-text-center">{{user.user}}</div>
+          <div class="po-text-center">{{ user.sub }}</div>
         </div>
         
       </po-container>
