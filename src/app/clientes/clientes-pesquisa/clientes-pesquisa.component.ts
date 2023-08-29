@@ -81,11 +81,11 @@ export class ClientesPesquisaComponent implements OnInit{
   }
 
   private novoCliente() : void {
-    this.router.navigate(['clientes', 'novo']);
+    this.router.navigate(['/app/clientes', 'novo']);
   }
 
   private editarCliente(value: any) : void {
-    this.router.navigate([`clientes/${value.id}`,'edicao']);
+    this.router.navigate([`/app/clientes/${value.id}`,'edicao']);
   }
 
   private adicionarNovaPropriedade(clientes: any[]) : any[] {

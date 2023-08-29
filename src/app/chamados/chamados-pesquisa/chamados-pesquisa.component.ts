@@ -43,7 +43,7 @@ export class ChamadosPesquisaComponent implements OnInit{
   }
 
   private novoChamado() : void {
-    this.rotuer.navigate(['chamados', 'novo']);
+    this.rotuer.navigate(['app','chamados', 'novo']);
   }
   
   public pesquisar() {
@@ -96,7 +96,7 @@ export class ChamadosPesquisaComponent implements OnInit{
   }
 
   private editarChamado(value: any): void {
-    this.rotuer.navigate([`chamados/${value.id}`, 'edicao'])
+    this.rotuer.navigate([`/app/chamados/${value.id}`, 'edicao'])
   }
 
   private adicionarAcoes(clientes: any[]): any[]  {
