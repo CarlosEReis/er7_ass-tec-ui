@@ -9,6 +9,9 @@ import { PoTabsModule } from '@po-ui/ng-components';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { SegurancaModule } from './seguranca/seguranca.module';
+import { AutenticacaoGuard } from './guardas/autenticacao.guard';
+
 
 @NgModule({
   declarations: [
@@ -22,9 +25,11 @@ import { AppComponent } from './app.component';
     RouterModule.forRoot([]),
 
     PoFieldModule,
-    PoTabsModule
+    PoTabsModule,
+
+    SegurancaModule
   ],
-  providers: [],
+  providers: [ AutenticacaoGuard ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
