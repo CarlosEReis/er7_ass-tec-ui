@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CoreComponent } from './core.component';
+import { AutenticacaoGuard } from '../guardas/autenticacao.guard';
 
 export const routes: Routes = [
   {
@@ -10,12 +11,14 @@ export const routes: Routes = [
       {
         path: 'clientes',
         loadChildren: () =>
-          import('../clientes/clientes.module').then((m) => m.ClientesModule)
+          import('../clientes/clientes.module').then((m) => m.ClientesModule),
+        canActivate: [ AutenticacaoGuard ]
       },
       {
         path: 'chamados',
         loadChildren: () =>
-          import('../chamados/chamados.module').then((m) => m.ChamadosModule)
+          import('../chamados/chamados.module').then((m) => m.ChamadosModule),
+        canActivate: [ AutenticacaoGuard ]
       },
       {
         path: '',
@@ -24,7 +27,7 @@ export const routes: Routes = [
       },
       {
         path: '**',
-        redirectTo: '',
+        redirectTo: 'app',
       },
     ],
   },
