@@ -37,3 +37,15 @@
 .po-modal-body {
     padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) var(--spacing-md)
 }
+
+.po-page-login-highlight-text .po-font-display {
+    max-width:none;
+    background-color: #0356a485;
+}
+
+.po-page-login-highlight-text > div {
+    background-color: #0356a485;
+    max-width: none;
+    padding: 5rem ;
+    text-justify: bold !important;   
+}

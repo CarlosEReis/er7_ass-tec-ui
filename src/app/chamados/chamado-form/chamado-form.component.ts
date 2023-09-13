@@ -151,7 +151,7 @@ export class ChamadoFormComponent implements OnInit{
     
     if (input.length > 3) {      
       this.clienteService.pesquisar(input)
-        .then( (clientes: any) => {         
+        /*.then( (clientes: any) => {         
           this.filterClientes = clientes; 
           this.opcoesClientes = clientes.map(
             (cliente: any) => ({'label': cliente.nome, 'value': cliente.id}) );
@@ -159,7 +159,7 @@ export class ChamadoFormComponent implements OnInit{
         .catch((erro) => { 
           this.poNotificationService.error('Não foi possível carregar os cliente. Verifica com o administrador')
           console.error(erro);
-        })
+        })*/
     }
   }
 

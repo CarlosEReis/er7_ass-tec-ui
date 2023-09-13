@@ -30,7 +30,11 @@ export class ClientesPesquisaComponent implements OnInit{
   public carregaClientes(): void {
     this.clienteService.pesquisar(this.pesquisaNome)
       .then(
-        clientes => this.clientes = this.adicionarNovaPropriedade(clientes)
+        clientes => {
+          console.log(clientes);
+          
+          this.clientes = this.adicionarNovaPropriedade(clientes['content'])
+        }
       )
       .catch((erro) => this.poNotificationService.error({message: 'Não foi possível carregar os clientes.'})
     )
@@ -55,7 +59,7 @@ export class ClientesPesquisaComponent implements OnInit{
       { label: 'Status', property: '' },
       { label: 'tipo', property: '' },
       { label: 'CPF / CNPJ', property: 'documento', type: 'columnTemplate' },
-      { label: 'Localização', property: 'endereco', type: 'columnTemplate' },
+      { label: 'Localização', property: 'endereco.localidade' },
       { label: 'Vendedor', property: '' },
       {
         property: 'acoes',
