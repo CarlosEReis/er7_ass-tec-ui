@@ -1,8 +1,7 @@
 <po-page-default p-title="Pesquisa de Clientes" [p-actions]="acoes">
-  <hr />
-
+ 
   <form #pesquisaForm="ngForm" >
-    <div class="po-row">
+    <div class="po-row po-pb-2">
       
       <po-input class="po-md-10" name="pesquisaNome" [(ngModel)]="pesquisaNome" (p-change-model)="pesquisar()" p-pattern="[a-z]{4}" p-error-pattern="Digite pelo menos 4 caractéres" [p-auto-focus]="true" p-icon="po-icon po-icon-search" p-placeholder="Pesquisa por código, CNPJ, empresa, grupo econômico"></po-input>
 
@@ -15,7 +14,15 @@
     </div>
   </form>
 
-  <po-table [p-columns]="colunas" [p-items]="clientes" [p-striped]="true">
+  <po-table 
+    [p-columns]="colunas" 
+    [p-items]="clientes"[p-hide-columns-manager]="true"
+    [p-striped]="true"
+    [p-loading]="carregandoClientes"
+    [p-height]="508"
+    [p-show-more-disabled]="false"
+    (p-show-more)="carregarMaisClientes($event)"
+    >
 
     <ng-template p-table-column-template [p-property]="'documento'" let-documento>
       <span *ngIf="documento.length == 14">
@@ -25,10 +32,6 @@
         {{ documento | slice:0:3}}.{{ documento | slice:3:6}}.{{ documento | slice:6:9}}-{{ documento | slice:9:11}}
       </span>
     </ng-template>
-
-    <!-- <ng-template p-table-column-template [p-property]="'endereco'" let-endereco>
-      <span [innerText]="endereco.cidade + ' - ' + endereco.estado" ></span>
-    </ng-template> -->
 
   </po-table>
 

@@ -15,6 +15,12 @@ export class ClientesPesquisaComponent implements OnInit{
 
   acoes!: PoPageAction[]
   colunas!: PoTableColumn[];
+  carregandoClientes= false;
+
+  private paginacao = {
+    size: 5,
+    page: 0
+  }
   
   constructor(
     private clienteService: ClientesService,
@@ -28,16 +34,31 @@ export class ClientesPesquisaComponent implements OnInit{
   }
 
   public carregaClientes(): void {
+    this.carregandoClientes = true;
     this.clienteService.pesquisar(this.pesquisaNome)
       .then(
         clientes => {
           console.log(clientes);
-          
           this.clientes = this.adicionarNovaPropriedade(clientes['content'])
+          this.carregandoClientes = false;
         }
       )
       .catch((erro) => this.poNotificationService.error({message: 'Não foi possível carregar os clientes.'})
     )
+  }
+
+  public carregarMaisClientes(event: any): void {
+    this.carregandoClientes = true;
+    this.paginacao.page++;
+
+    this.clienteService.pesquisar(this.pesquisaNome, this.paginacao )
+      .then((resp: any) => {
+        this.clientes = this.adicionarNovaPropriedade(this.clientes.concat(resp['content']));
+        this.carregandoClientes = false;
+      })
+      .catch(
+        erro => this.poNotificationService.error({ message: 'Não foi possível carregar novos cliente.' })
+      )
   }
 
   public pesquisar() {    

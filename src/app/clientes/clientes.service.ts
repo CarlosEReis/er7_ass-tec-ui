@@ -13,16 +13,21 @@ export class ClientesService {
   constructor(private http: HttpClient) { }
 
   public adicionar(cliente: any) : Promise<any> {
-    const headers = new HttpHeaders().append('Content-type', 'Application/Json')
+    const headers = new HttpHeaders()
+      .append('Content-type', 'Application/Json')
     return firstValueFrom(this.http.post(this.clientesURL, cliente, { headers }));
   }
 
-  public pesquisar(nome: string) : Promise<any>{
+  public pesquisar(nome: string, paginacao = { size: 5, page: 0}) : Promise<any>{
+    let params = new HttpParams()
+      .append('size', paginacao.size)
+      .append('page', paginacao.page);
+
     if (nome) {
-      const params = new HttpParams().append('nome', nome);
+      params = params.append('nome', nome);
       return firstValueFrom(this.http.get(this.clientesURL, { params }))
     }
-    return firstValueFrom(this.http.get(`${this.clientesURL}`));
+    return firstValueFrom(this.http.get(this.clientesURL, { params }));
   }
 
   public buscar(codigo: number): Promise<any> {
