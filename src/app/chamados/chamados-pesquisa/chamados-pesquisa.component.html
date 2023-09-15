@@ -1,8 +1,7 @@
 <po-page-default p-title="Pesquisa de Chamados" [p-actions]="acoes">
-    <hr />
   
     <form #pesquisaForm="ngForm" >
-      <div class="po-row">
+      <div class="po-row po-pb-2">
         
         <po-input class="po-md-10" name="pesquisaNome" [(ngModel)]="pesquisaNomeCliente" (p-change-model)="pesquisar()" p-pattern="[a-z]{4}" p-error-pattern="Digite pelo menos 4 caractéres" [p-auto-focus]="true" p-icon="po-icon po-icon-search" p-placeholder="Pesquisar pelo nome da empresa"></po-input>
   
@@ -15,7 +14,16 @@
       </div>
     </form>
   
-    <po-table [p-columns]="colunas" [p-items]="chamados" [p-striped]="true">
+    <po-table
+      [p-columns]="colunas"
+      [p-items]="chamados"
+      [p-hide-columns-manager]="true"
+      [p-striped]="true"
+      [p-loading]="carregandoChamados"
+      [p-height]="508"
+      [p-show-more-disabled]="false"
+      (p-show-more)="carregarMaisChamados()"
+      >
   
   
     </po-table>

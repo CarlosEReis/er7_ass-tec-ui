@@ -12,9 +12,15 @@ export class ChamadosPesquisaComponent implements OnInit{
   
   chamados!: any[];
   pesquisaNomeCliente!: string;
+  
   acoes!: PoPageAction[];
-
   colunas!: PoTableColumn[];
+  carregandoChamados = false;
+
+  private paginacao = {
+    size: 1,
+    page: 0
+  }
 
   constructor(
     private rotuer: Router,
@@ -29,11 +35,31 @@ export class ChamadosPesquisaComponent implements OnInit{
   }
 
   public carregaChamados(): void {
-    this.chamadosService.pesquisar(this.pesquisaNomeCliente)
+    this.carregandoChamados = true;
+    this.chamadosService.pesquisar(this.pesquisaNomeCliente, this.paginacao)
       .then(
-        clientes => this.chamados = this.adicionarAcoes(clientes))
+        clientes => {
+          this.chamados = this.adicionarAcoes(clientes['content']);
+          this.carregandoChamados = false;
+        })
       .catch(
         (erro) => this.poNotificationService.error({message: 'Não foi possível carregar os clientes.'}))
+  }
+
+  public carregarMaisChamados() : void {
+    this.carregandoChamados = true;
+    this.paginacao.page++;
+    this.chamadosService.pesquisar(this.pesquisaNomeCliente,this.paginacao)
+      .then(
+        chamados => {
+          this.chamados = this.chamados.concat(this.adicionarAcoes(chamados['content']))
+          this.carregandoChamados = false;
+        }
+      )
+      .catch( erro => this.poNotificationService.error({
+          message: 'Não foi possível carregar novos chamado.'
+        })
+      )
   }
 
   private carregarAcoes() : void  {
@@ -57,13 +83,13 @@ export class ChamadosPesquisaComponent implements OnInit{
   private carregaColunas(): PoTableColumn[] {
     return [
       { label: 'id', property: 'id' },
-      { label: 'Data criação', property: 'dataCriacao'},
+      { label: 'Data criação', property: 'dataCriacao', type: 'dateTime'},
       { label: 'Status', property: 'status', type: 'label', labels: [
         { value: 'FILA', label: 'Na Fila', color: 'color-08', textColor: '#FFF', },
         { value: 'PROCESSANDO', label: 'Processando', color: 'color-02', textColor: '#FFF' },
         { value: 'FINALIZADO', label: 'Finalizado', color: 'color-10', textColor: '#FFF' } ] },
-      { label: 'Cliente', property: 'clienteNome' },
-      { label: 'CPF/CNPJ', property: 'clienteDocumento' },
+      { label: 'Cliente', property: 'cliente.nome' },
+      { label: 'CPF/CNPJ', property: 'cliente.documento' },
       { 
         label: 'Ações',
         property: 'acoes',

@@ -12,12 +12,17 @@ export class ChamadosService {
 
   constructor(private http: HttpClient) { }
 
-  public pesquisar(nome: string) : Promise<any> {
+  public pesquisar(nome: string, paginacao = { size: 5, page: 0 }) : Promise<any> {
+
+    let params = new HttpParams()
+      .append('size',paginacao.size)
+      .append('page', paginacao.page);
+
     if (nome) {
-      const params = new HttpParams().append('nome', nome);
-      return firstValueFrom(this.http.get(this.chamadosURL, { params }))
+      params = params.append('nome', nome);
+      return firstValueFrom(this.http.get(this.chamadosURL, { params }));
     }
-    return firstValueFrom(this.http.get(this.chamadosURL));
+    return firstValueFrom(this.http.get(this.chamadosURL, { params }));
   }
 
   public buscarPorId(id: number) : Promise<any> {
