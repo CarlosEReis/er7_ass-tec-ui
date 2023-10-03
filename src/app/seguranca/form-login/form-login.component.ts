@@ -41,9 +41,10 @@ export class FormLoginComponent implements OnInit{
 
   muda() {
     let array = [
-      'https://img.freepik.com/fotos-gratis/mecanico-de-automoveis-feliz-usando-tablet-digital-enquanto-trabalhava-na-oficina-mecanica_637285-7606.jpg?w=1800&t=st=1694571548~exp=1694572148~hmac=dbf4b20428051e3c4b61740a91caafa42b01ca1f1fae5a9de1d48c708cfa36b1', 
-      'https://img.freepik.com/fotos-gratis/pessoa-de-vista-frontal-reparando-uma-placa-mae_23-2148419153.jpg?w=900&t=st=1694571249~exp=1694571849~hmac=b7186672d20ed3d030769fa52ad1e58c2f78436eeadb67e0e4acfe1779f3cdee', 
-      'https://img.freepik.com/fotos-premium/servico-de-reparo-de-eletronicos-espaco-de-texto_87646-4953.jpg?w=826'
+      './assets/img/login-img-01.jpeg',
+      './assets/img/login-img-02.jpeg',
+      './assets/img/login-img-03.jpeg',
+      './assets/img/login-img-04.jpeg',
     ]; // Seu array de números
     let index = 0;
     this.backgroundImageAtual = array[index];
