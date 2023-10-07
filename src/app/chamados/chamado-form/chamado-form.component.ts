@@ -24,6 +24,7 @@ export class ChamadoFormComponent implements OnInit{
   @ViewChild(PoModalComponent, { static: true }) poModal!: PoModalComponent;
   @ViewChild('formOcorrencia', { static: true }) form!: FormGroup;
  
+  overlayHidden = true;
 
   tituloPagina = '';
   tituloModalOcorrencia = '';
@@ -125,7 +126,7 @@ export class ChamadoFormComponent implements OnInit{
       let form = this.formBuilder.group({
         index:[index],
         id: [],
-        status: ['PENDENTE',],
+        ultimoStatus: ['PENDENTE',],
         sku: ['',],
         descProd: [,],
         serial: ['',],
@@ -134,7 +135,6 @@ export class ChamadoFormComponent implements OnInit{
       })      
       form.patchValue(item);
       this.itens.push(form);
-      
 
       
     });  
@@ -151,28 +151,54 @@ export class ChamadoFormComponent implements OnInit{
     
     if (input.length > 3) {      
       this.clienteService.pesquisar(input)
-        /*.then( (clientes: any) => {         
-          this.filterClientes = clientes; 
-          this.opcoesClientes = clientes.map(
+        .then( (clientes: any) => {       
+          this.filterClientes = clientes['content'];
+          console.log('CLIENTE', clientes['content']);
+          
+          this.opcoesClientes = clientes['content'].map(
             (cliente: any) => ({'label': cliente.nome, 'value': cliente.id}) );
         })
         .catch((erro) => { 
           this.poNotificationService.error('Não foi possível carregar os cliente. Verifica com o administrador')
           console.error(erro);
-        })*/
+        })
     }
   }
 
   onChangeCliente(event: any) {
-    const cliente = this.filterClientes.find( c => c.id === event);
-    this.formChamado.get('cliente')?.get('documento')?.setValue(cliente.documento);
-    this.formChamado.get('cliente')?.get('endereco')?.patchValue(cliente.endereco);   
-    this.formChamado.get('cliente')?.get('contatos')?.setValue(cliente.contatos);
-    console.log(cliente.contatos);
-    console.log(this.formChamado.value);
+
+    if (event) {      
+      this.overlayHidden = false;
+      setTimeout(() => {
+  
+        this.clienteService.buscar(event)
+        .then(
+          cliente => {
+            this.formChamado.get('cliente')?.get('documento')?.setValue(cliente.documento);
+            this.formChamado.get('cliente')?.get('endereco')?.patchValue(cliente.endereco);   
+            this.formChamado.get('cliente')?.get('contatos')?.setValue(cliente.contatos);
+            
+            this.overlayHidden = true;
+            this.modalContatos.open();
+            
+          }
+        ).catch((erro) => { 
+          this.overlayHidden = true;
+          this.poNotificationService.error('Não foi possível carregar os cliente. Verifica com o administrador');
+        })
+  
+      }, 1000);
+    }
+    
+
+
+    /*const cliente = this.filterClientes.find( c => c.id === event);   
+
+    console.log('CONTATOS',cliente.contatos);
+    console.log(this.formChamado.value);*/
     
     
-    this.modalContatos.open();
+    
   }
 
   public salvarChamado() {
@@ -219,8 +245,7 @@ export class ChamadoFormComponent implements OnInit{
     return this.colunasOcorrencias = [
       { property: 'sku', label: 'Código', width: '8%' },
       { property: 'serial', label: 'Número de Série', width: '10%' },
-      { label: 'Status', property: 'status', type: 'label', labels: [
-
+      { property: 'ultimoStatus', label: 'Status', type: 'label', labels: [
         { value: 'AVALIADO', label: 'Avaliado', color: 'color-10', textColor: '#FFF' },
         { value: 'AVALIANDO', label: 'Avaliando', color: 'color-01', textColor: '#FFF' },
         { value: 'PENDENTE', label: 'Pendente', color: 'color-08', textColor: '#FFF' }

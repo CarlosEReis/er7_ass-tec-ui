@@ -1,7 +1,10 @@
 <po-page-default [p-title]="tituloPagina" [p-actions]="acoesPagina">
-  <hr />
 
-
+  <po-loading-overlay
+    [hidden]="overlayHidden"
+    [p-screen-lock]="true"
+    p-text="Aguarde um Instante" >
+  </po-loading-overlay>
 
   <div class="po-row">
     <div class="po-md-12 po-mt-5 po-mb-4">
