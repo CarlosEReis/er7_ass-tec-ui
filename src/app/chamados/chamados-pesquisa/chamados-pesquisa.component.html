@@ -25,7 +25,14 @@
       (p-show-more)="carregarMaisChamados()"
       >
   
-  
+      <ng-template p-table-column-template [p-property]="'cliente.documento'" let-documento>
+        <span *ngIf="documento.length == 14">
+          {{ documento | slice:0:2}}.{{ documento | slice:2:5}}.{{ documento | slice:5:8}}/{{ documento | slice:8:12}}-{{ documento | slice:12:14}}
+        </span>
+        <span *ngIf="documento.length < 14">
+          {{ documento | slice:0:3}}.{{ documento | slice:3:6}}.{{ documento | slice:6:9}}-{{ documento | slice:9:11}}
+        </span>
+      </ng-template>
     </po-table>
   
   </po-page-default>

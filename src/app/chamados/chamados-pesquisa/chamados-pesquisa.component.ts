@@ -18,7 +18,7 @@ export class ChamadosPesquisaComponent implements OnInit{
   carregandoChamados = false;
 
   private paginacao = {
-    size: 1,
+    size: 7,
     page: 0
   }
 
@@ -89,7 +89,7 @@ export class ChamadosPesquisaComponent implements OnInit{
         { value: 'PROCESSANDO', label: 'Processando', color: 'color-02', textColor: '#FFF' },
         { value: 'FINALIZADO', label: 'Finalizado', color: 'color-10', textColor: '#FFF' } ] },
       { label: 'Cliente', property: 'cliente.nome' },
-      { label: 'CPF/CNPJ', property: 'cliente.documento' },
+      { label: 'CPF/CNPJ', property: 'cliente.documento', type: 'columnTemplate' },
       { 
         label: 'Ações',
         property: 'acoes',
