@@ -1,27 +1,33 @@
 <po-page-default p-title="{{ clienteForm.get('id')?.value === null ? 'Novo' : 'Editando' }} Cliente 📝: {{clienteForm.get('nome')?.value}}" [p-actions]="acoes">
 
+  <po-loading-overlay
+  [hidden]="overlayHidden"
+  [p-screen-lock]="true"
+  p-text="Aguarde um Instante" >
+  </po-loading-overlay>
+
   <hr />
   <form [formGroup]="clienteForm" (ngSubmit)="salvar()">
       
     <div class="po-row">
-      <po-input p-label="Nome" name="nome" formControlName="nome" id="nome" p-required="true" [p-show-required]="true" [p-maxlength]="40" class="po-md-5" p-placeholder="Digite aqui o nome"></po-input>
-      <po-input p-label="Fantásia" name="fantasia" formControlName="fantasia" id="fantasia" [p-maxlength]="20" class="po-md-4" p-placeholder="Digite aqui a fantásia"></po-input>
+      <po-input p-label="Nome" name="nome" formControlName="nome" id="nome" [p-show-required]="true" [p-minlength]="8" [p-maxlength]="40" p-error-pattern="Digite um nome entre 8 a 40 caracteres." class="po-md-5" p-placeholder="Digite aqui o nome"></po-input>
+      <po-input p-label="Fantásia" name="fantasia" formControlName="fantasia" id="fantasia" [p-minlength]="5" [p-maxlength]="20" p-error-pattern="Digite um nome entre 5 a 20 caracteres." class="po-md-4" p-placeholder="Digite aqui a fantásia"></po-input>
       <po-select p-label="Tipo Pess." #tipo name="tipoPessoa" formControlName="tipoPessoa" [p-options]="tipoPessoa" id="tipo-pessoa" [p-required]="true" class="po-md-1" p-placeholder="Selecione"></po-select>
-      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'FISICA' || clienteForm.get('tipoPessoa')?.value === null" p-label="CPF" name="documento" formControlName="documento" id="cpf" p-required="true" [p-show-required]="true" [p-maxlength]="15" class="po-md-2" p-placeholder="Digite o CPF"></po-input>
-      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'JURIDICA'"  p-label="CNPJ" name="documento" formControlName="documento" id="cnpj" p-required="true" [p-show-required]="true" [p-maxlength]="18" class="po-md-2" p-placeholder="Digite o CNPJ"></po-input>
+      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'FISICA' || clienteForm.get('tipoPessoa')?.value === null" p-label="CPF" name="documento" formControlName="documento" id="cpf" [p-show-required]="true" p-mask="999.999.999-99" p-pattern="\d{11}" p-error-pattern="Digite um CPF válido." class="po-md-2" p-placeholder="Digite o CPF"></po-input>
+      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'JURIDICA'"  p-label="CNPJ" name="documento" formControlName="documento" id="cnpj" [p-show-required]="true" p-mask="99.999.999/9999-99" p-pattern="\d{14}" p-error-pattern="Digite um CNPJ válido." class="po-md-2" p-placeholder="Digite o CNPJ"></po-input>
       <!-- p-mask está impossibilitando o uso de testes no Selenium IDE-->
       <!-- Máscara para CPF p-mask="999.999.999-99" -->
       <!-- Máscara para CNPJ p-mask="99.999.999/9999-99" -->
     </div>
   
     <div class="po-row po-mt-2">
-      <po-select p-label="Tipo Cliente" name="tipoCliente" formControlName="tipoCliente" [p-options]="tipoCliente" id="tipo-cliente" [p-required]="true" [p-show-required]="true" class="po-md-2" p-placeholder="Selecione"></po-select>
+      <po-select p-label="Tipo Cliente" name="tipoCliente" formControlName="tipoCliente" [p-options]="tipoCliente" id="tipo-cliente" [p-show-required]="true" class="po-md-2" p-placeholder="Selecione"></po-select>
       <po-input p-label="Insc. Estadual" name="inscricaoEstadual" formControlName="inscricaoEstadual" id="inscricao-estadual" [p-maxlength]="18" class="po-md-2" p-placeholder="Inscrição Estadual"></po-input>
       <po-input p-label="Contribuinte" name="contribuinte" formControlName="contribuinte" id="contribuinte" class="po-md-1" p-placeholder="Selecione"></po-input>
       <po-input p-disabled="true" p-label="Tabela de Preço" name="tabelaPreco" formControlName="tabelaPreco" id="tabela-preco" class="po-md-2" p-placeholder="Selecione"></po-input>
-      <po-email p-label="E-mail" name="email" formControlName="email" id="email" p-required="true" [p-show-required]="true" [p-maxlength]="40" class="po-md-3" p-placeholder="Digite o e-mail"></po-email>
-      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'FISICA' || clienteForm.get('tipoPessoa')?.value === null" p-label="Celular" name="celular" formControlName="telefone" id="celular" p-required="true" [p-show-required]="true" [p-maxlength]="15" p-icon="po-icon po-icon-device-smartphone" class="po-md-2" p-placeholder="Digite o telefone"></po-input>
-      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'JURIDICA'" p-label="Telefone" name="telefone" formControlName="telefone" id="telefone" p-required="true" [p-show-required]="true" [p-maxlength]="15" p-icon="po-icon po-icon-telephone" class="po-md-2" p-placeholder="Digite o telefone"></po-input>
+      <po-email p-label="E-mail" name="email" formControlName="email" id="email" [p-show-required]="true" [p-maxlength]="40" class="po-md-3" p-placeholder="Digite o e-mail"></po-email>
+      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'FISICA' || clienteForm.get('tipoPessoa')?.value === null" p-label="Celular" name="celular" formControlName="telefone" id="celular" [p-show-required]="true" p-mask="(99) 9.9999-9999" p-pattern="\d{11}" p-error-pattern="Digite um celular válido." p-icon="po-icon po-icon-device-smartphone" class="po-md-2" p-placeholder="Digite o telefone"></po-input>
+      <po-input *ngIf="clienteForm.get('tipoPessoa')?.value === 'JURIDICA'" p-label="Telefone" name="telefone" formControlName="telefone" id="telefone"  [p-show-required]="true" p-mask="(99) 9999-9999" p-pattern="\d{10}" p-icon="po-icon po-icon-telephone" class="po-md-2" p-placeholder="Digite o telefone"></po-input>
       <!-- p-mask está impossibilitando o uso de testes no Selenium IDE-->
       <!-- Máscara para telefone p-mask="(99) 99999-9999"-->
     </div>
@@ -32,7 +38,7 @@
       <po-tab p-label="Endereço" [p-active]="true">
   
         <div class="po-row po-mt-2" formGroupName="endereco">
-          <po-input p-label="CEP" name="cep" formControlName="cep" id="cep" p-required="true" [p-show-required]="true" p-icon="po-icon po-icon-map" class="po-md-2" p-placeholder="Digite o CEP"></po-input>
+          <po-input p-label="CEP" name="cep" formControlName="cep" p-mask="99999-999" p-pattern="\d{8}" p-error-pattern="Digite um cep válido Ex. 99999-999" id="cep" p-icon="po-icon po-icon-map" class="po-md-2" p-placeholder="Digite o CEP"></po-input>
           <!-- p-mask está impossibilitando o uso de testes no Selenium IDE -->
           <!-- Máscara para CEP p-mask="99999-999" -->
           <po-input p-label="Nº" name="numero" formControlName="numero" id="numero" class="po-md-1" p-placeholder="Número"></po-input>

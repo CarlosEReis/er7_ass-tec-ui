@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ClienteFormComponent implements OnInit {
   
+  overlayHidden = true;
   acoes!: PoPageAction[];
   clienteForm!: FormGroup;
   tipoPessoa!: PoSelectOption[]; 
@@ -56,37 +57,50 @@ export class ClienteFormComponent implements OnInit {
   }
 
   public salvar() : void{
-    this.clienteService.adicionar(this.clienteForm.value)
-    .then((cliente: any)=>{
-      this.poNotificationService.success({message: `Cliente ${cliente.nome} adicionado com sucesso.`})
-      this.router.navigate(['clientes']);
-    })
-    .catch((erro: any) => {
-      this.poNotificationService.error({message: `Não foi possível cadastrar o clientes`})
-    })
+    if (this.clienteForm.valid) {
+      this.overlayHidden = false;
+       
+        this.clienteService.adicionar(this.clienteForm.value)
+        .then((cliente: any)=>{
+          this.poNotificationService.success({message: `Cliente ${cliente.nome} adicionado com sucesso.`})
+          this.router.navigate(['app','clientes']);
+          this.overlayHidden = true;
+        })
+        .catch((reponse: any) => {
+          this.overlayHidden = true;
+          const erros = reponse?.error?.errors as [];
+          erros.forEach((e:any) => {
+            this.poNotificationService.error({message: e.message})
+          })
+        })
+    
+    } else {
+      this.poNotificationService.warning({message: 'Formulário inválido'});
+    }
+    
   }
 
   public carregaAcoes() : PoPageAction[] {
     return [
-      { icon: 'po-icon po-icon-upload', label: 'Salvar', action: this.salvar.bind(this) }
+      { icon: 'po-icon po-icon-upload', label: 'Salvar', action: this.salvar.bind(this), disabled: this.isClientFormValid.bind(this) }
     ]
   }
 
   private configuraForm() : FormGroup {
     return this.formBuilder.group({
       id: [],
-      nome: [ , Validators.required],
-      fantasia: [],
+      nome: [, Validators.required],
+      fantasia: ['', ],
       tipoPessoa: [ , Validators.required],
-      documento: [ , Validators.required],
-      tipoCliente: [ , Validators.required],
+      documento: [ '', Validators.required],
+      tipoCliente: [ , ],
       inscricaoEstadual: [],
       contribuinte: [],
       tabelaPreco: [],
-      email: [ , Validators.required],
+      email: [ , Validators.compose([Validators.required, Validators.email])],
       telefone: [ , Validators.required],
       endereco: this.formBuilder.group({
-        cep: [ , Validators.required],
+        cep: [ , Validators.compose([Validators.required])],
         logradouro: [ , Validators.required],
         numero: [],
         complemento: [],
@@ -203,5 +217,9 @@ export class ClienteFormComponent implements OnInit {
     this.formContatoBuilder();
     this.formContato.patchValue(value);
     this.modalContato.open();
+  }
+
+  private isClientFormValid() : boolean {
+    return !this.clienteForm.valid;
   }
 }
