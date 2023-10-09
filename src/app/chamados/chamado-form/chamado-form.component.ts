@@ -122,6 +122,7 @@ export class ChamadoFormComponent implements OnInit{
   private carregarChamado(chamado: any) : void {
     this.tituloPagina = `Chamado ${chamado.id} - ${chamado.cliente.nome}`;
     this.formChamado.patchValue(chamado);
+    this.formChamado.get('dataCriacao')?.setValue(this.formataData(chamado.dataCriacao));
     chamado.itens.forEach((item: any, index: any) => {
       let form = this.formBuilder.group({
         index:[index],
@@ -138,6 +139,10 @@ export class ChamadoFormComponent implements OnInit{
 
       
     });  
+  }
+
+  private formataData(data: string) {
+    return new Date(data).toLocaleString('pt-BR');
   }
 
   public carregaAcoes() : void {
