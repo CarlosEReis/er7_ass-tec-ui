@@ -49,7 +49,8 @@
           </ng-template>
         </po-combo> 
 
-        <po-input class="po-md-3" p-label="CPF/CNPJ" name="documento" formControlName="documento"  ></po-input>
+        <po-input *ngIf="formChamado.get('cliente')?.get('tipoPessoa')?.value === 'FISICA'" class="po-md-3" p-label="CPF" name="documento" formControlName="documento" p-mask="999.999.999-99"></po-input>
+        <po-input *ngIf="formChamado.get('cliente')?.get('tipoPessoa')?.value === 'JURIDICA'" class="po-md-3" p-label="CNPJ" name="documento" formControlName="documento" p-mask="99.999.999/9999-99"></po-input>
       </div>
     </div>
 
@@ -122,7 +123,7 @@
   #modal 
   p-size="md"
   [p-title]="tituloModalOcorrencia"
-  [p-primary-action]="salvarOcorrencia()"
+
   [p-secondary-action]="fechar()">
 
   <form [formGroup]="formOcorrencia">
@@ -135,8 +136,17 @@
     <br>
     
     <div class="po-row">
-      <po-textarea name="descricao" formControlName="descricao" class="po-md-12" [p-rows]="6" p-label="Ocorrência"></po-textarea>
+      <po-textarea name="descricao" formControlName="descricao" class="po-md-12" [p-rows]="8" p-label="Ocorrência"></po-textarea>
     </div>
+
+    <div *ngIf="!formOcorrencia.get('ultimoStatus')?.value || formOcorrencia.get('ultimoStatus')?.value === 'PENDENTE'? false : true">
+      <po-divider></po-divider>
+
+      <div class="po-row">
+        <po-textarea name="posicaoTecnica" formControlName="posicaoTecnica" class="po-md-12" p-label="Posição Técnica 🧑‍🔧"></po-textarea>
+      </div>      
+    </div>
+
   </form>
 </po-modal>
 

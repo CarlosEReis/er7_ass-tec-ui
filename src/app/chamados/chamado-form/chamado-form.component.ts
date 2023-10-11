@@ -13,6 +13,11 @@ import { ChamadosService } from '../chamados.service';
 import { ClientesService } from 'src/app/clientes/clientes.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
+interface AlteraStatus {
+  status: string;
+  posicaoTecnica: string;
+}
+
 @Component({
   selector: 'app-chamado-form',
   templateUrl: './chamado-form.component.html',
@@ -109,6 +114,7 @@ export class ChamadoFormComponent implements OnInit{
   }
 
   private buscarChamado(codigo: number) : void {
+
     this.chamadoService.buscarPorId(codigo)
       .then( chamado => this.carregarChamado(chamado))
       .catch(erro => {
@@ -120,6 +126,9 @@ export class ChamadoFormComponent implements OnInit{
   }
 
   private carregarChamado(chamado: any) : void {
+    this.configuraFormChamado();
+    this.configuraFormOcorrencia();
+    
     this.tituloPagina = `Chamado ${chamado.id} - ${chamado.cliente.nome}`;
     this.formChamado.patchValue(chamado);
     this.formChamado.get('dataCriacao')?.setValue(this.formataData(chamado.dataCriacao));
@@ -132,12 +141,11 @@ export class ChamadoFormComponent implements OnInit{
         descProd: [,],
         serial: ['',],
         descricao: [,],
+        posicaoTecnica: [,],
         acoes: ['editar']
       })      
       form.patchValue(item);
-      this.itens.push(form);
-
-      
+      this.itens.push(form);      
     });  
   }
 
@@ -277,6 +285,7 @@ export class ChamadoFormComponent implements OnInit{
         id: [],
         nome: [],
         documento: [],
+        tipoPessoa: [],
         endereco: this.formBuilder.group({
           cep: [],
           logradouro: [],
@@ -304,20 +313,15 @@ export class ChamadoFormComponent implements OnInit{
   adicionarOcorrencia() {
     this.tituloModalOcorrencia = 'Nova Ocorrência.'
     this.configuraFormOcorrencia();
+    this.poModal.primaryAction = this.btnModalItemPrimary();
     this.poModal.open();
   }
 
   editarOcorrencia(value: any) {
-    console.log('value', value);
     this.formOcorrencia.patchValue(value);
-
     this.tituloModalOcorrencia = `Editando ocorrência ${value.index + 1}`
-    if (this.isEditandoOcorrencia()) {
-      console.log('EDITANDO OCORRENCIA');
-      
-    }
+    this.poModal.primaryAction = this.btnModalItemPrimary();
     this.poModal.open();
-    
   }
 
   public isEditandoChamado(): boolean {
@@ -338,39 +342,80 @@ export class ChamadoFormComponent implements OnInit{
     }; 
   }
 
-  public salvarOcorrencia() : PoModalAction {
-    return {
-      action: () => {
-        if (!this.isEditandoOcorrencia()) {
-
-          this.formOcorrencia.get('index')?.setValue(this.itens.length);
-          this.itens.push(this.formBuilder.group(this.formOcorrencia.value));
-
-        } else {
-        
-          const indexOcorrencia = this.formOcorrencia.get('index')?.value;
-          let f = this.ocorrenciaFormBuilder();
-          f.patchValue(this.formOcorrencia.value);      
-          this.itens.at(indexOcorrencia).patchValue(f.value);
+  public btnModalItemPrimary() : PoModalAction {
+    console.log('STATUS',this.formOcorrencia.get('ultimoStatus')?.value);
+    
+    if (!this.isEditandoChamado()) {
+      return {
+        action: () => {
+          if (!this.isEditandoOcorrencia()) {
+  
+            this.formOcorrencia.get('index')?.setValue(this.itens.length);
+            this.formOcorrencia.patchValue({ ultimoStatus: 'PENDENTE' });
+            this.itens.push(this.formBuilder.group(this.formOcorrencia.value));
+  
+          } else {
           
-        }
-        
-        this.configuraFormOcorrencia();
-        this.poModal.close();
-      },
-      label: 'Adicionar'
-    };
+            const indexOcorrencia = this.formOcorrencia.get('index')?.value;
+            let f = this.ocorrenciaFormBuilder();
+            f.patchValue(this.formOcorrencia.value);      
+            this.itens.at(indexOcorrencia).patchValue(f.value);
+            
+          }
+          
+          this.configuraFormOcorrencia();
+          this.poModal.close();
+        },
+        label: 'Adicionar'
+      };      
+    } 
+
+    if (this.formOcorrencia.get('ultimoStatus')?.value === 'PENDENTE') {
+      return {
+        label: 'Avaliar',
+        action: () => this.alterarStatusItemChamado({ status: 'AVALIANDO', posicaoTecnica: ''})
+      }
+    }
+
+    if (this.formOcorrencia.get('ultimoStatus')?.value === 'AVALIANDO') {
+      return {
+        label: 'Concluir',
+        action: () => this.alterarStatusItemChamado({ status: 'AVALIADO', posicaoTecnica: this.formOcorrencia.get('posicaoTecnica')?.value})
+      }   
+    } else {
+      return {label: '', action: () => null};
+    }
   }
+
+  private alterarStatusItemChamado(alteraStatus: AlteraStatus) {
+    this.overlayHidden = false;
+    this.chamadoService.iniciaAvaliacao(this.formChamado.get('id')?.value, this.formOcorrencia.get('id')?.value, alteraStatus)
+    .then(chamado => {
+      this.carregarChamado(chamado);
+      this.setarStatus(chamado.status);
+      this.overlayHidden = true;
+    })
+    .catch(response => {       
+      this.poNotificationService.warning({
+        message: response.error.detail
+      })
+      this.overlayHidden = true;
+    })
+    this.poModal.close();
+  }
+
+
 
   private ocorrenciaFormBuilder() : FormGroup{
     return this.formBuilder.group({
       index:[],
       id: [],
-      status: ['PENDENTE',],
+      ultimoStatus: [],
       sku: ['',],
       descProd: [,],
       serial: ['',],
       descricao: [,],
+      posicaoTecnica: [,],
       acoes: ['editar']
     })
   }

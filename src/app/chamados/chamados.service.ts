@@ -44,4 +44,10 @@ export class ChamadosService {
   public fichaChamadoTecnico(idChamado: number) : Promise<Blob> {
     return firstValueFrom(this.http.get(`${this.chamadosURL}/${idChamado}/ficha`, { responseType: 'blob' }));
   }
+
+  public iniciaAvaliacao(idChamado: number, idItemChamado: number, status: { status: string, posicaoTecnica: string } ) : Promise<any> {
+    const headers = new HttpHeaders()
+    .append('Content-Type', 'text/plain');
+    return firstValueFrom(this.http.post(`${this.chamadosURL}/${idChamado}/alteracao-status-item/${idItemChamado}`, status, {headers}));
+  }
 }
