@@ -96,6 +96,12 @@ export class ChamadosPesquisaComponent implements OnInit{
         type: 'icon',
         sortable: false,
         icons: [
+          {
+            action: (value: any) => { this.rotuer.navigate(['app', 'chamados', value.id]) } ,
+            icon: 'po-icon po-icon-eye' ,
+            tooltip: 'Visualizar' ,
+            value: 'visualizar'             
+          },
           { 
             action: (value: any) => { this.editarChamado(value) } ,
             icon: 'po-icon-export' ,
@@ -127,7 +133,7 @@ export class ChamadosPesquisaComponent implements OnInit{
 
   private adicionarAcoes(clientes: any[]): any[]  {
     return clientes.map(
-      clientes => ({...clientes, acoes: ['editar', 'ficha']})
+      clientes => ({...clientes, acoes: ['visualizar','editar', 'ficha']})
     );
   }
 }
