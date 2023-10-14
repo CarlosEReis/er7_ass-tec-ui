@@ -133,7 +133,7 @@ export class ChamadosPesquisaComponent implements OnInit{
 
   private adicionarAcoes(clientes: any[]): any[]  {
     return clientes.map(
-      clientes => ({...clientes, acoes: ['visualizar','editar', 'ficha']})
+      clientes => ({...clientes, acoes: ['visualizar', 'editar', 'ficha']})
     );
   }
 }

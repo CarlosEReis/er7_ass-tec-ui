@@ -79,6 +79,15 @@ export class ChamadoFormComponent implements OnInit{
     }, 5);
   }
 
+  public modoEdicao() : boolean {
+    const chamadoId = this.activatedRoute.snapshot.params['id'];
+    const modoEdicao = this.activatedRoute.snapshot.data['modoEdicao'];
+    if (chamadoId && modoEdicao) {
+      return true;
+    }
+    return false;
+  }
+
   setarStatus(status: string)  {
     let steps: PoStepperItem[] = this.poStepperComponent.steps;
     
@@ -142,7 +151,7 @@ export class ChamadoFormComponent implements OnInit{
         serial: ['',],
         descricao: [,],
         posicaoTecnica: [,],
-        acoes: ['editar']
+        acoes: [ this.modoEdicao() ? 'editar' : 'visulizar' ]
       })      
       form.patchValue(item);
       this.itens.push(form);      
@@ -154,10 +163,15 @@ export class ChamadoFormComponent implements OnInit{
   }
 
   public carregaAcoes() : void {
-    this.acoesPagina = [
-      { label: 'Salvar', action: this.salvarChamado.bind(this) }, 
-      { label: 'Ficha', action: this.geraFichaChamado.bind(this) }
-    ];
+    this.acoesPagina = [];
+    if (this.modoEdicao()) {
+      this.acoesPagina.push(
+        { label: 'Salvar', action: this.salvarChamado.bind(this) }, 
+        { label: 'Ficha', action: this.geraFichaChamado.bind(this) });
+    } else {
+      this.acoesPagina.push(
+        { label: 'Ficha', action: this.geraFichaChamado.bind(this) })
+    }
   }
 
   public pesquisarCliente(input: string) : void {
@@ -270,6 +284,12 @@ export class ChamadoFormComponent implements OnInit{
             icon: 'po-icon-export' ,
             tooltip: 'Editar' ,
             value: 'editar' 
+          },
+          { 
+            action: (rowIndex: any) => { this.editarOcorrencia(rowIndex) } ,
+            icon: 'po-icon po-icon-eye' ,
+            tooltip: 'Visualizar' ,
+            value: 'visulizar' 
           }
         ]
       }
@@ -433,7 +453,7 @@ export class ChamadoFormComponent implements OnInit{
 
   private carregarColunasContatos() : void {
     this.colunasContatos = [
-      { label: 'Nome', property: 'nome',type: 'columnTemplate' },
+      { label: 'Nome', property: 'nome' },
       { label: 'E-mail', property: 'email' },
       { label: 'Telefone', property: 'telefone' },
       { label: 'Departamento', property: 'departamento' },

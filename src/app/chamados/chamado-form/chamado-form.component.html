@@ -59,7 +59,7 @@
     <po-tabs>
       <po-tab p-label="Itens do Chamado" [p-active]="true">
 
-        <div class="po-row po-mb-1">
+        <div *ngIf="modoEdicao()" class="po-row po-mb-1">
             <po-button p-label="Ocorrência" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="adicionarOcorrencia()"></po-button>
         </div>
 
@@ -95,7 +95,7 @@
       <po-tab p-label="Contatos">
 
         <div class="po-row po-mb-1">
-          <po-button p-label="Contato" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="vicularContato()"></po-button>
+          <po-button *ngIf="modoEdicao()" p-label="Contato" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="vicularContato()"></po-button>
         </div>
 
         <po-table 
@@ -104,13 +104,6 @@
           [p-items]="formChamado.get('contatos')?.value"
           [p-striped]="true"
           [p-hide-columns-manager]="true">
-
-          <ng-template p-table-column-template p-property="nome" let-nome>
-            <div class="po-table-column-cell po-table-body-ellipsis notranslate">
-              <span class="po-icon po-icon-user"></span> &nbsp;
-              <span>{{nome}}</span>
-            </div>
-          </ng-template>
 
         </po-table>
       </po-tab>
