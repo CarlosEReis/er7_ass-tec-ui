@@ -17,8 +17,8 @@
 
   <form [formGroup]="formChamado">
     <div class="po-row">
-      <po-input p-label="Chamado" name="chamado" formControlName="id" class="po-md-1"></po-input>
-      <po-input p-label="Criação" name="dataCriacao" formControlName="dataCriacao" class="po-md-2"></po-input>
+      <po-input [p-disabled]="novoChamado() + ''" p-label="Chamado" name="chamado" formControlName="id" class="po-md-1"></po-input>
+      <po-input [p-disabled]="novoChamado() + ''" p-label="Criação" name="dataCriacao" formControlName="dataCriacao" class="po-md-2"></po-input>
       
       <div class="po-md-9" formGroupName="cliente">
 

@@ -93,8 +93,8 @@ export class ChamadoFormComponent implements OnInit{
     return this.activatedRoute.snapshot.data['modoEdicao'] === false;
   }
 
-  public novoChamado() : boolean{
-    return this.activatedRoute.snapshot.data['novoChamado'];
+  public novoChamado() : boolean {
+    return this.activatedRoute.snapshot.data['novoChamado'] ? true : false;
   }
 
   setarStatus(status: string)  {
@@ -306,7 +306,7 @@ export class ChamadoFormComponent implements OnInit{
   private configuraFormChamado() : void{
     this.formChamado = this.formBuilder.group({
       id: [],
-      dataCriacao: [new Date() ,],
+      dataCriacao: [,],
       status: [],
       cliente: this.formBuilder.group({
         id: [],
