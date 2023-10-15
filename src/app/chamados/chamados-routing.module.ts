@@ -6,9 +6,9 @@ import { AutenticacaoGuard } from '../guardas/autenticacao.guard';
 
 const routes: Routes = [
   { path: '', component: ChamadosPesquisaComponent, canActivate: [ AutenticacaoGuard ] },
-  { path: 'novo', component: ChamadoFormComponent, canActivate: [ AutenticacaoGuard ]},
-  { path: ':id', component: ChamadoFormComponent, data: { modoEdicao: false } ,canActivate: [ AutenticacaoGuard ] },
-  { path: ':id/edicao', component: ChamadoFormComponent, data: { modoEdicao: true } ,canActivate: [ AutenticacaoGuard ] }
+  { path: 'novo', component: ChamadoFormComponent, data: { novoChamado: true }, canActivate: [ AutenticacaoGuard ]},
+  { path: ':id', component: ChamadoFormComponent, data: { modoEdicao: false }, canActivate: [ AutenticacaoGuard ] },
+  { path: ':id/edicao', component: ChamadoFormComponent, data: { modoEdicao: true }, canActivate: [ AutenticacaoGuard ] }
 ];
 
 @NgModule({

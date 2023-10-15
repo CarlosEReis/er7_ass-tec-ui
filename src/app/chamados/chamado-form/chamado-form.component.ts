@@ -66,6 +66,7 @@ export class ChamadoFormComponent implements OnInit{
       this.buscarChamado(chamadoId);
     }
 
+    
     this.tituloPagina = 'Novo chamado técncico';
     this.carregaAcoes();
     this.carregaColunasOcorrencias();
@@ -86,6 +87,14 @@ export class ChamadoFormComponent implements OnInit{
       return true;
     }
     return false;
+  }
+
+  public modoVisualizacao() : boolean {
+    return this.activatedRoute.snapshot.data['modoEdicao'] === false;
+  }
+
+  public novoChamado() : boolean{
+    return this.activatedRoute.snapshot.data['novoChamado'];
   }
 
   setarStatus(status: string)  {
@@ -164,14 +173,23 @@ export class ChamadoFormComponent implements OnInit{
 
   public carregaAcoes() : void {
     this.acoesPagina = [];
-    if (this.modoEdicao()) {
+    if (this.novoChamado()) {
+      this.acoesPagina.push(
+        { label: 'Salvar', action: this.salvarChamado.bind(this) }
+      )
+    }
+
+    if (this.modoEdicao() ) {
       this.acoesPagina.push(
         { label: 'Salvar', action: this.salvarChamado.bind(this) }, 
         { label: 'Ficha', action: this.geraFichaChamado.bind(this) });
-    } else {
+    }
+    
+    if (this.modoVisualizacao()) {
       this.acoesPagina.push(
         { label: 'Ficha', action: this.geraFichaChamado.bind(this) })
     }
+    
   }
 
   public pesquisarCliente(input: string) : void {
@@ -179,9 +197,7 @@ export class ChamadoFormComponent implements OnInit{
     if (input.length > 3) {      
       this.clienteService.pesquisar(input)
         .then( (clientes: any) => {       
-          this.filterClientes = clientes['content'];
-          console.log('CLIENTE', clientes['content']);
-          
+          this.filterClientes = clientes['content'];          
           this.opcoesClientes = clientes['content'].map(
             (cliente: any) => ({'label': cliente.nome, 'value': cliente.id}) );
         })
@@ -201,13 +217,9 @@ export class ChamadoFormComponent implements OnInit{
         this.clienteService.buscar(event)
         .then(
           cliente => {
-            this.formChamado.get('cliente')?.get('documento')?.setValue(cliente.documento);
-            this.formChamado.get('cliente')?.get('endereco')?.patchValue(cliente.endereco);   
-            this.formChamado.get('cliente')?.get('contatos')?.setValue(cliente.contatos);
-            
+            this.formChamado.get('cliente')?.patchValue(cliente);
             this.overlayHidden = true;
             this.modalContatos.open();
-            
           }
         ).catch((erro) => { 
           this.overlayHidden = true;
@@ -216,20 +228,15 @@ export class ChamadoFormComponent implements OnInit{
   
       }, 1000);
     }
-    
-
 
     /*const cliente = this.filterClientes.find( c => c.id === event);   
 
     console.log('CONTATOS',cliente.contatos);
-    console.log(this.formChamado.value);*/
-    
-    
-    
+    console.log(this.formChamado.value);*/    
   }
 
   public salvarChamado() {
-    const chamado = this.formChamado.value;
+    const chamado = this.formChamado.value;    
     if (this.isEditandoChamado()) {
       this.atualizaChamado(chamado);
     } else {
@@ -305,7 +312,7 @@ export class ChamadoFormComponent implements OnInit{
         id: [],
         nome: [],
         documento: [],
-        tipoPessoa: [],
+        tipoPessoa: ['FISICA'],
         endereco: this.formBuilder.group({
           cep: [],
           logradouro: [],
@@ -362,9 +369,7 @@ export class ChamadoFormComponent implements OnInit{
     }; 
   }
 
-  public btnModalItemPrimary() : PoModalAction {
-    console.log('STATUS',this.formOcorrencia.get('ultimoStatus')?.value);
-    
+  public btnModalItemPrimary() : PoModalAction {    
     if (!this.isEditandoChamado()) {
       return {
         action: () => {
@@ -439,11 +444,6 @@ export class ChamadoFormComponent implements OnInit{
       acoes: ['editar']
     })
   }
-
-  pegarOcorrencia(id: number) {
-    console.log(this.formChamado.get('itens')?.value);
-  }
-
 
   // ################ CONTATOS ################
   @ViewChild("modalContatos", { static: true }) modalContatos!: PoModalComponent;

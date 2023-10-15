@@ -59,7 +59,7 @@
     <po-tabs>
       <po-tab p-label="Itens do Chamado" [p-active]="true">
 
-        <div *ngIf="modoEdicao()" class="po-row po-mb-1">
+        <div *ngIf="modoEdicao() || novoChamado()" class="po-row po-mb-1">
             <po-button p-label="Ocorrência" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="adicionarOcorrencia()"></po-button>
         </div>
 
@@ -95,7 +95,7 @@
       <po-tab p-label="Contatos">
 
         <div class="po-row po-mb-1">
-          <po-button *ngIf="modoEdicao()" p-label="Contato" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="vicularContato()"></po-button>
+          <po-button *ngIf="modoEdicao() || novoChamado()" p-label="Contato" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="vicularContato()"></po-button>
         </div>
 
         <po-table 
