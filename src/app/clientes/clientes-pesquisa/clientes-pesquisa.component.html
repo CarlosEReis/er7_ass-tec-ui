@@ -3,7 +3,7 @@
   <form #pesquisaForm="ngForm" >
     <div class="po-row po-pb-2">
       
-      <po-input class="po-md-10" name="pesquisaNome" [(ngModel)]="pesquisaNome" (p-change-model)="pesquisar()" p-pattern="[a-z]{4}" p-error-pattern="Digite pelo menos 4 caractéres" [p-auto-focus]="true" p-icon="po-icon po-icon-search" p-placeholder="Pesquisa por código, CNPJ, empresa, grupo econômico"></po-input>
+      <po-input class="po-md-10" name="pesquisaNome" [(ngModel)]="pesquisaNome" (p-change-model)="pesquisar()" p-pattern="[a-z]{4}" p-error-pattern="Digite pelo menos 4 caractéres" [p-auto-focus]="true" p-icon="po-icon po-icon-search" p-placeholder="Pesquisa pelo nome do cliente"></po-input>
 
       <div class="po-md-2">
         <div class="po-field-container-content">
