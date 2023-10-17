@@ -20,9 +20,10 @@
       [p-hide-columns-manager]="true"
       [p-striped]="true"
       [p-loading]="carregandoChamados"
-      [p-height]="508"
+      [p-height]="720"
       [p-show-more-disabled]="false"
       (p-show-more)="carregarMaisChamados()"
+      [p-literals]="{loadMoreData: 'Carregar mais Chamados'}"
       >
   
       <ng-template p-table-column-template [p-property]="'cliente.documento'" let-documento>

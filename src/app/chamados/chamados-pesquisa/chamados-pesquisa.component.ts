@@ -18,7 +18,7 @@ export class ChamadosPesquisaComponent implements OnInit{
   carregandoChamados = false;
 
   private paginacao = {
-    size: 7,
+    size: 12,
     page: 0
   }
 
