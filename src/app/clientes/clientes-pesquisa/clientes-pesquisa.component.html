@@ -19,9 +19,10 @@
     [p-items]="clientes"[p-hide-columns-manager]="true"
     [p-striped]="true"
     [p-loading]="carregandoClientes"
-    [p-height]="508"
+    [p-height]="720"
     [p-show-more-disabled]="false"
     (p-show-more)="carregarMaisClientes($event)"
+    [p-literals]="{loadMoreData: 'Carregar mais Clientes'}"
     >
 
     <ng-template p-table-column-template [p-property]="'documento'" let-documento>

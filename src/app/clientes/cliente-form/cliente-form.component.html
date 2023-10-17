@@ -1,4 +1,4 @@
-<po-page-default p-title="{{ clienteForm.get('id')?.value === null ? 'Novo' : 'Editando' }} Cliente 📝: {{clienteForm.get('nome')?.value}}" [p-actions]="acoes">
+<po-page-default [p-title]="tituloPagina" [p-actions]="acoes">
 
   <po-loading-overlay
   [hidden]="overlayHidden"
@@ -52,7 +52,7 @@
       </po-tab>
 
       <po-tab p-label="Contatos">
-        <div class="po-row po-mb-1">
+        <div *ngIf="modoEdicao() || novoCliente()" class="po-row po-mb-1">
           <po-button p-label="Contato" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="novoContato()"></po-button>
         </div>
 

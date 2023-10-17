@@ -18,7 +18,7 @@ export class ClientesPesquisaComponent implements OnInit{
   carregandoClientes= false;
 
   private paginacao = {
-    size: 5,
+    size: 12,
     page: 0
   }
   
@@ -35,7 +35,7 @@ export class ClientesPesquisaComponent implements OnInit{
 
   public carregaClientes(): void {
     this.carregandoClientes = true;
-    this.clienteService.pesquisar(this.pesquisaNome)
+    this.clienteService.pesquisar(this.pesquisaNome, this.paginacao)
       .then(
         clientes => {
           console.log(clientes);
@@ -54,7 +54,7 @@ export class ClientesPesquisaComponent implements OnInit{
     this.clienteService.pesquisar(this.pesquisaNome, this.paginacao )
       .then((resp: any) => {
         this.clientes = this.adicionarNovaPropriedade(this.clientes.concat(resp['content']));
-        this.carregandoClientes = false;
+        this.carregandoClientes = false;        
       })
       .catch(
         erro => this.poNotificationService.error({ message: 'Não foi possível carregar novos cliente.' })
@@ -89,6 +89,12 @@ export class ClientesPesquisaComponent implements OnInit{
         sortable: false,
         icons: [
           {
+            action: (value: any) => { this.router.navigate(['app', 'clientes', value.id]) },
+            icon: 'po-icon po-icon-eye',
+            tooltip: 'Visualizar',
+            value: 'visualizar'
+          },
+          {
             action: (value: any) => { this.editarCliente(value) },
             icon: 'po-icon-export',
             tooltip: 'Editar',
@@ -115,7 +121,7 @@ export class ClientesPesquisaComponent implements OnInit{
 
   private adicionarNovaPropriedade(clientes: any[]) : any[] {
     return clientes.map(
-      cliente => ({...cliente, acoes: ['editar']})
+      cliente => ({...cliente, acoes: ['visualizar', 'editar']})
     );
   }
 }

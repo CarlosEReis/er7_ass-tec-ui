@@ -11,8 +11,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ClienteFormComponent implements OnInit {
   
+  tituloPagina = '';
   overlayHidden = true;
-  acoes!: PoPageAction[];
+  acoes: PoPageAction[] = [];
   clienteForm!: FormGroup;
   tipoPessoa!: PoSelectOption[]; 
   tipoCliente!: PoSelectOption[];
@@ -29,9 +30,11 @@ export class ClienteFormComponent implements OnInit {
 
     if (clienteId) {
       this.buscarCliente(clienteId);
+    } else {
+      this.tituloPagina = 'Novo Cliente'
     }
 
-    this.acoes = this.carregaAcoes();
+    this.carregaAcoes();
     this.clienteForm = this.configuraForm();
     this.tipoPessoa = this.carregaTipoPessoa();
     this.tipoCliente = this.carregaTipoCliente();
@@ -40,10 +43,37 @@ export class ClienteFormComponent implements OnInit {
     this.carregarColunasContatos()
   }
 
+  public modoEdicao() : boolean {
+    const clienteId = this.activatedRoute.snapshot.params['id'];
+    const modoEdicao = this.activatedRoute.snapshot.data['modoEdicao'];
+    if (clienteId && modoEdicao === true) {
+      return true;
+    }
+    return false;
+  }
+
+  public modoVisualizacao() : boolean {
+    return this.activatedRoute.snapshot.data['modoEdicao'] === false;
+  }
+
+  public novoCliente() : boolean {
+    return this.activatedRoute.snapshot.data['novoCliente'] ? true : false;
+  }
+
   private buscarCliente(codigo: number) : void {
     this.clienteService.buscar(codigo)
       .then((cliente: any) => this.carregaCliente(cliente))
       .catch();
+  }
+
+  private tituloPaginaEditandoOuVisualizando() {
+    if (this.modoEdicao()) {
+      this.tituloPagina = `Editando Cliente ${this.clienteForm.get('nome')?.value}`
+    }
+    
+    if (this.modoEdicao() === false && this.modoVisualizacao() === true) {
+      this.tituloPagina =  `Visualizando Cliente ${this.clienteForm.get('nome')?.value}`
+    }
   }
 
   private carregaCliente(cliente: any) {
@@ -53,6 +83,7 @@ export class ClienteFormComponent implements OnInit {
       form.patchValue(contato);
       form.get('index')?.setValue(index);
       this.contatos.push(form);
+      this.tituloPaginaEditandoOuVisualizando();
     })
   }
 
@@ -80,10 +111,11 @@ export class ClienteFormComponent implements OnInit {
     
   }
 
-  public carregaAcoes() : PoPageAction[] {
-    return [
-      { icon: 'po-icon po-icon-upload', label: 'Salvar', action: this.salvar.bind(this), disabled: this.isClientFormValid.bind(this) }
-    ]
+  public carregaAcoes() : void {
+    const salvar: PoPageAction = { icon: 'po-icon po-icon-upload', label: 'Salvar', action: this.salvar.bind(this), disabled: this.isClientFormValid.bind(this) };
+    if (this.modoEdicao() || this.novoCliente()) {
+      this.acoes.push(salvar)
+    }
   }
 
   private configuraForm() : FormGroup {
