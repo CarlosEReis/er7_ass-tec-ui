@@ -1,4 +1,10 @@
 <po-page-default p-title="Pesquisa de Chamados" [p-actions]="acoes">
+
+  <po-loading-overlay
+  [hidden]="overlayHidden"
+  [p-screen-lock]="true"
+  p-text="Aguarde um Instante" >
+  </po-loading-overlay>
   
     <form #pesquisaForm="ngForm" >
       <div class="po-row po-pb-2">

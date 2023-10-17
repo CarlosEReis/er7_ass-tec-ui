@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class ChamadosPesquisaComponent implements OnInit{
   
+  overlayHidden = true;
   chamados!: any[];
   pesquisaNomeCliente!: string;
   
@@ -120,11 +121,12 @@ export class ChamadosPesquisaComponent implements OnInit{
   }
 
   private geraFichaChamado(value: any) {
+    this.overlayHidden = false;
     this.chamadosService.fichaChamadoTecnico(value.id)
     .then(ficha => {
       const url = window.URL.createObjectURL(ficha);
       window.open(url);
-    });
+    }).finally(() => this.overlayHidden = true);
   }
 
   private editarChamado(value: any): void {

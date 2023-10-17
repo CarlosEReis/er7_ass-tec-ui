@@ -121,12 +121,14 @@ export class ChamadoFormComponent implements OnInit{
   }
 
   private geraFichaChamado() {
+    this.overlayHidden = false;
     if (this.isEditandoChamado()) { 
       const chamadoId = this.formChamado.get('id')?.value;
       this.chamadoService.fichaChamadoTecnico(chamadoId)
       .then(ficha => {
         const url = window.URL.createObjectURL(ficha);
         window.open(url);
+        this.overlayHidden = true;
       });
     }
   }
