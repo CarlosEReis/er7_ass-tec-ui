@@ -61,9 +61,13 @@ export class ClienteFormComponent implements OnInit {
   }
 
   private buscarCliente(codigo: number) : void {
+    this.overlayHidden = false;
     this.clienteService.buscar(codigo)
-      .then((cliente: any) => this.carregaCliente(cliente))
-      .catch();
+      .then((cliente: any) => {
+        this.carregaCliente(cliente)
+      })
+      .catch()
+      .finally( () => this.overlayHidden = true );
   }
 
   private tituloPaginaEditandoOuVisualizando() {
