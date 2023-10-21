@@ -252,7 +252,7 @@ export class ChamadoFormComponent implements OnInit{
       this.poNotificationService.success(
         {message: `Chamado de código ${chamado.id} atualizado com sucesso.`}
       )
-      this.router.navigate(['/chamados']);
+      this.router.navigate(['app', 'chamados']);
     })
     .catch(erro => {
       this.poNotificationService.error(
@@ -267,7 +267,7 @@ export class ChamadoFormComponent implements OnInit{
       this.poNotificationService.success(
         {message: `Chamado de código ${chamado.id} criado com sucesso.`}
       )
-      this.router.navigate(['/chamados']);
+      this.router.navigate(['app','chamados']);
     })
     .catch(erro => {
       this.poNotificationService.error(
