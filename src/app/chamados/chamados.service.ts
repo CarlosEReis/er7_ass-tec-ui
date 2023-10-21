@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment.development';
 export class ChamadosService {
 
   private chamadosURL = environment.apiUrl.concat('/chamados')
+  private produtosURL = environment.apiUrl.concat('/produtos')
 
   constructor(private http: HttpClient) { }
 
@@ -49,5 +50,9 @@ export class ChamadosService {
     const headers = new HttpHeaders()
     .append('Content-Type', 'text/plain');
     return firstValueFrom(this.http.post(`${this.chamadosURL}/${idChamado}/alteracao-status-item/${idItemChamado}`, status, {headers}));
+  }
+
+  public pesquisarSKU(sku : string) : Promise<any>{
+    return firstValueFrom(this.http.get(`${this.produtosURL}?sku=${sku}`));
   }
 }

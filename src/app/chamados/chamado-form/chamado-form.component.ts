@@ -44,6 +44,9 @@ export class ChamadoFormComponent implements OnInit{
   filterClientes: any[] = [];
   opcoesClientes: PoComboOption[] = [];
 
+  // ITENS CHAMADO
+  opcoesSKU!: any[];
+
   status: Array<PoStepperItem> = [
     { label: 'Na Fila' },
     { label: 'Processando'},
@@ -490,4 +493,22 @@ export class ChamadoFormComponent implements OnInit{
     //const contatos = this.formChamado.get('cliente')?.value;
     this.modalContatos.open();
   }
+
+  pesquisarSKU(sku : string) : void {
+    if (sku.length > 3) 
+      this.chamadoService.pesquisarSKU(sku)
+      .then( (itens) => {
+        this.opcoesSKU = itens.map(
+          (item: any) => ({ 'label': item.sku, 'value': item.sku, 'descricao': item.nome})); console.log(itens);
+          }
+      )
+  }
+
+  onChangeSKU(item: any) {
+    if (item) {
+      const produto = this.opcoesSKU.find(p => p.value === item);
+      this.formOcorrencia.get('descProd')?.setValue(produto.descricao)
+    }
+  }
+
 }
