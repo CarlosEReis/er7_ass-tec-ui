@@ -349,11 +349,23 @@ export class ChamadoFormComponent implements OnInit{
     this.poModal.open();
   }
 
-  editarOcorrencia(value: any) {
-    this.formOcorrencia.patchValue(value);
+  editarOcorrencia(value: any) { 
+    this.formOcorrencia = this.ocorrenciaFormBuilder();
     this.tituloModalOcorrencia = `Editando ocorrência ${value.index + 1}`
-    this.poModal.primaryAction = this.btnModalItemPrimary();
-    this.poModal.open();
+    
+
+    this.opcoesSKU = [({ 'label': value.sku, 'value': value.sku })];
+
+    this.chamadoService.pesquisarSKU(value.sku)
+    .then(i => {      
+      this.formOcorrencia.patchValue(value);
+      this.formOcorrencia.get('sku')?.setValue(i[0].sku)
+      this.formOcorrencia.get('descProd')?.setValue(i[0].nome);
+      this.poModal.primaryAction = this.btnModalItemPrimary();
+      this.poModal.open();
+    })
+    .catch();
+    
   }
 
   public isEditandoChamado(): boolean {
@@ -442,7 +454,7 @@ export class ChamadoFormComponent implements OnInit{
       id: [],
       ultimoStatus: [],
       sku: ['',],
-      descProd: [,],
+      descProd: ['',],
       serial: ['',],
       descricao: [,],
       posicaoTecnica: [,],
@@ -495,9 +507,10 @@ export class ChamadoFormComponent implements OnInit{
   }
 
   pesquisarSKU(sku : string) : void {
-    if (sku.length > 3) 
+    if (sku.length >= 2) 
       this.chamadoService.pesquisarSKU(sku)
       .then( (itens) => {
+        this.opcoesSKU = [];
         this.opcoesSKU = itens.map(
           (item: any) => ({ 'label': item.sku, 'value': item.sku, 'descricao': item.nome})); console.log(itens);
           }
@@ -505,7 +518,7 @@ export class ChamadoFormComponent implements OnInit{
   }
 
   onChangeSKU(item: any) {
-    if (item) {
+    if (item) {      
       const produto = this.opcoesSKU.find(p => p.value === item);
       this.formOcorrencia.get('descProd')?.setValue(produto.descricao)
     }

@@ -122,7 +122,14 @@
   <form [formGroup]="formOcorrencia">
     <div class="po-row">
 
-      <po-combo name="sku" formControlName="sku" p-label="SKU" class="po-md-3" [p-options]="opcoesSKU" (p-input-change)="pesquisarSKU($event)" (p-change)="onChangeSKU($event)"> </po-combo>
+      <po-combo 
+        name="sku" 
+        formControlName="sku" 
+        [p-options]="opcoesSKU"
+        (p-input-change)="pesquisarSKU($event)"
+        (p-change)="onChangeSKU($event)"
+        p-label="SKU" class="po-md-3"> </po-combo>
+
       <po-input name="descProd" formControlName="descProd" p-label="Descrição" class="po-md-5"></po-input>
       <po-input name="serial" formControlName="serial" p-label="Serial" class="po-md-4"></po-input>
     </div>
