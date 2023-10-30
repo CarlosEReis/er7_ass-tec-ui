@@ -1,11 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
-.po-menu-header-container-logo {
+/*.po-menu-header-container-logo {
     margin-top: 1rem;
-}
+}*/
 
 .po-menu-logo{
     margin: auto;
+    max-height: 60px;
 }
 
 #usuario-container > .po-container {
@@ -49,3 +50,10 @@
     padding: 5rem ;
     text-justify: bold !important;   
 }
+
+.po-page-background-main-logo-image {
+	max-height: 114px;
+	max-width: none !important;
+	top: 124px; 
+}
+
