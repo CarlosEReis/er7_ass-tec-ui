@@ -11,7 +11,7 @@ import { ClienteResumo, PageClienteResumo } from '../model/ClienteResumo';
 })
 export class ClientesPesquisaComponent implements OnInit{
   
-  clientes: ClienteResumo[] = [];
+  clientes!: ClienteResumo[];
   pesquisaNome!: string;
 
   acoes!: PoPageAction[]
@@ -39,37 +39,44 @@ export class ClientesPesquisaComponent implements OnInit{
     this.carregandoClientes = true;
     this.clienteService.pesquisar(this.pesquisaNome, this.paginacao).subscribe({
       next: (pageClientes: PageClienteResumo) => {
-        this.clientes = this.clientes.concat(this.adicionarNovaPropriedade(pageClientes.content));
+        this.clientes = this.adicionarAcoes(pageClientes.content);
         this.paginacao.last = pageClientes.last;
         this.carregandoClientes = false;
       },
-      error: (errro) => {
-        this.poNotificationService.error({message: 'Não foi possível carregar os clientes.'});
-      }
+      error: (errro) => this.poNotificationService.error({message: 'Não foi possível carregar os clientes.'})
     });
   }
   
-  public carregarMaisClientes(event: any): void {
+  public carregarMaisClientes(): void {
     if (this.paginacao.last) {
+      this.poNotificationService.warning({ message: 'Não há mais clientes para carregar.' });
+      return;
+    }
+    this.paginacao.page++;
+    this.carregandoClientes = true;
+    this.clienteService.pesquisar(this.pesquisaNome,this.paginacao).subscribe({
+      next: (pageClienteResumo: PageClienteResumo) => {
+        this.clientes = this.clientes.concat(this.adicionarAcoes(pageClienteResumo.content));
+        this.paginacao.last = pageClienteResumo.last;
+        this.carregandoClientes = false;
+      },
+      error: () => () => this.poNotificationService.error({message: 'Não foi possível carregar novos chamado.'})
+    })
+
+    /*if (this.paginacao.last) {
       this.poNotificationService.warning({ message: 'Não há mais clientes para carregar.' })
       return;
     }
     this.paginacao.page++;
-    this.carregaClientes();
+    this.carregaClientes();*/
   }
 
   public pesquisar() {    
     if(this.pesquisaNome && this.pesquisaNome.length > 3) {
       this.paginacao.page = 0;
-      this.clienteService.pesquisar(this.pesquisaNome, this.paginacao).subscribe({
-        next: (pageCientes: PageClienteResumo) => {
-          this.clientes = this.adicionarNovaPropriedade(pageCientes.content);
-          this.paginacao.last = pageCientes.last;
-          this.carregandoClientes = false;
-        }
-      })
-    } else if (!this.pesquisaNome){
-      this.carregaClientes()
+      this.carregaClientes();
+    } else if (!this.pesquisaNome) {
+      this.carregaClientes();
     }
   }
 
@@ -123,7 +130,7 @@ export class ClientesPesquisaComponent implements OnInit{
     this.router.navigate([`/app/clientes/${value.id}`,'edicao']);
   }
 
-  private adicionarNovaPropriedade(clientes: any[]) : any[] {
+  private adicionarAcoes(clientes: any[]) : any[] {
     return clientes.map(
       cliente => ({...cliente, acoes: ['visualizar', 'editar']})
     );
