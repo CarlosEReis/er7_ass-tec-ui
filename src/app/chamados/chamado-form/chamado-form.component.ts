@@ -12,6 +12,7 @@ import { PoComboOption,
 import { ChamadosService } from '../chamados.service';
 import { ClientesService } from 'src/app/clientes/clientes.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PageClienteResumo } from 'src/app/clientes/model/ClienteResumo';
 
 interface AlteraStatus {
   status: string;
@@ -200,16 +201,13 @@ export class ChamadoFormComponent implements OnInit{
   public pesquisarCliente(input: string) : void {
     
     if (input.length > 3) {      
-      this.clienteService.pesquisar(input)
-        .then( (clientes: any) => {       
-          this.filterClientes = clientes['content'];          
-          this.opcoesClientes = clientes['content'].map(
-            (cliente: any) => ({'label': cliente.nome, 'value': cliente.id}) );
-        })
-        .catch((erro) => { 
-          this.poNotificationService.error('Não foi possível carregar os cliente. Verifica com o administrador')
-          console.error(erro);
-        })
+      this.clienteService.pesquisar(input).subscribe({
+        next: (pageClientes: PageClienteResumo) => {
+          this.filterClientes = pageClientes.content;          
+          this.opcoesClientes = pageClientes.content.map((cliente: any) => ({'label': cliente.nome, 'value': cliente.id}) );
+        },
+        error: (erro) => this.poNotificationService.error('Não foi possível carregar os cliente. Verifica com o administrador')
+      })
     }
   }
 

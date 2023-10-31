@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PoNotificationService, PoPageAction, PoTableColumn } from '@po-ui/ng-components';
 import { ClientesService } from '../clientes.service';
+import { ClienteResumo, PageClienteResumo } from '../model/ClienteResumo';
 
 @Component({
   selector: 'app-clientes-pesquisa',
@@ -10,7 +11,7 @@ import { ClientesService } from '../clientes.service';
 })
 export class ClientesPesquisaComponent implements OnInit{
   
-  clientes!: any[];
+  clientes: ClienteResumo[] = [];
   pesquisaNome!: string;
 
   acoes!: PoPageAction[]
@@ -19,7 +20,8 @@ export class ClientesPesquisaComponent implements OnInit{
 
   private paginacao = {
     size: 12,
-    page: 0
+    page: 0,
+    last: false
   }
   
   constructor(
@@ -35,35 +37,37 @@ export class ClientesPesquisaComponent implements OnInit{
 
   public carregaClientes(): void {
     this.carregandoClientes = true;
-    this.clienteService.pesquisar(this.pesquisaNome, this.paginacao)
-      .then(
-        clientes => {
-          console.log(clientes);
-          this.clientes = this.adicionarNovaPropriedade(clientes['content'])
-          this.carregandoClientes = false;
-        }
-      )
-      .catch((erro) => this.poNotificationService.error({message: 'Não foi possível carregar os clientes.'})
-    )
+    this.clienteService.pesquisar(this.pesquisaNome, this.paginacao).subscribe({
+      next: (pageClientes: PageClienteResumo) => {
+        this.clientes = this.clientes.concat(this.adicionarNovaPropriedade(pageClientes.content));
+        this.paginacao.last = pageClientes.last;
+        this.carregandoClientes = false;
+      },
+      error: (errro) => {
+        this.poNotificationService.error({message: 'Não foi possível carregar os clientes.'});
+      }
+    });
   }
-
+  
   public carregarMaisClientes(event: any): void {
-    this.carregandoClientes = true;
+    if (this.paginacao.last) {
+      this.poNotificationService.warning({ message: 'Não há mais clientes para carregar.' })
+      return;
+    }
     this.paginacao.page++;
-
-    this.clienteService.pesquisar(this.pesquisaNome, this.paginacao )
-      .then((resp: any) => {
-        this.clientes = this.adicionarNovaPropriedade(this.clientes.concat(resp['content']));
-        this.carregandoClientes = false;        
-      })
-      .catch(
-        erro => this.poNotificationService.error({ message: 'Não foi possível carregar novos cliente.' })
-      )
+    this.carregaClientes();
   }
 
   public pesquisar() {    
     if(this.pesquisaNome && this.pesquisaNome.length > 3) {
-      this.carregaClientes();
+      this.paginacao.page = 0;
+      this.clienteService.pesquisar(this.pesquisaNome, this.paginacao).subscribe({
+        next: (pageCientes: PageClienteResumo) => {
+          this.clientes = this.adicionarNovaPropriedade(pageCientes.content);
+          this.paginacao.last = pageCientes.last;
+          this.carregandoClientes = false;
+        }
+      })
     } else if (!this.pesquisaNome){
       this.carregaClientes()
     }
