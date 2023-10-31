@@ -22,9 +22,9 @@
       
       <div class="po-md-9" formGroupName="cliente">
 
-        <po-input p-label="Cliente" name="nome-cliente" formControlName="nome" class="po-md-9" *ngIf="isEditandoChamado()"></po-input>
+        <po-input p-label="Cliente" name="nome-cliente" formControlName="nome" class="po-md-9" *ngIf="modoVisualizacao()"></po-input>
 
-        <po-combo class="po-md-9" *ngIf="!isEditandoChamado()"
+        <po-combo class="po-md-9" p-icon="po-icon po-icon-search"*ngIf="!modoVisualizacao()"
           p-label="Cliente"
           p-placeholder="Digite no mínimo 5 caracteres"
           name="nome-cliente"

@@ -39,7 +39,7 @@ export class ChamadoFormComponent implements OnInit{
   formOcorrencia!: FormGroup;
   
   acoesPagina!: PoPageAction[];
-  comboClienteValue!: any;
+  comboClienteValue = 0;
   colunasOcorrencias!: PoTableColumn[];
 
   filterClientes: any[] = [];
@@ -152,25 +152,31 @@ export class ChamadoFormComponent implements OnInit{
   private carregarChamado(chamado: any) : void {
     this.configuraFormChamado();
     this.configuraFormOcorrencia();
+
+    this.clienteService.buscar(chamado.cliente.id).then(
+      c => {
+        this.opcoesClientes.push({ 'value': c.id, 'label': c.nome })     
+        this.tituloPagina = `Chamado ${chamado.id} - ${chamado.cliente.nome}`;
+        this.formChamado.patchValue(chamado);
+        this.formChamado.get('dataCriacao')?.setValue(this.formataData(chamado.dataCriacao));
+        chamado.itens.forEach((item: any, index: any) => {
+          let form = this.formBuilder.group({
+            index:[index],
+            id: [],
+            ultimoStatus: ['PENDENTE',],
+            sku: ['',],
+            descProd: [,],
+            serial: ['',],
+            descricao: [,],
+            posicaoTecnica: [,],
+            acoes: [ this.modoEdicao() ? 'editar' : 'visulizar' ]
+          })      
+          form.patchValue(item);
+          this.itens.push(form);      
+        });  
+      }
+    )
     
-    this.tituloPagina = `Chamado ${chamado.id} - ${chamado.cliente.nome}`;
-    this.formChamado.patchValue(chamado);
-    this.formChamado.get('dataCriacao')?.setValue(this.formataData(chamado.dataCriacao));
-    chamado.itens.forEach((item: any, index: any) => {
-      let form = this.formBuilder.group({
-        index:[index],
-        id: [],
-        ultimoStatus: ['PENDENTE',],
-        sku: ['',],
-        descProd: [,],
-        serial: ['',],
-        descricao: [,],
-        posicaoTecnica: [,],
-        acoes: [ this.modoEdicao() ? 'editar' : 'visulizar' ]
-      })      
-      form.patchValue(item);
-      this.itens.push(form);      
-    });  
   }
 
   private formataData(data: string) {
@@ -211,12 +217,10 @@ export class ChamadoFormComponent implements OnInit{
     }
   }
 
-  onChangeCliente(event: any) {
-
-    if (event) {      
+  onChangeCliente(event: any) {  
+    if (event && this.comboClienteValue > 0) {
       this.overlayHidden = false;
       setTimeout(() => {
-  
         this.clienteService.buscar(event)
         .then(
           cliente => {
@@ -228,7 +232,7 @@ export class ChamadoFormComponent implements OnInit{
           this.overlayHidden = true;
           this.poNotificationService.error('Não foi possível carregar os cliente. Verifica com o administrador');
         })
-  
+      
       }, 1000);
     }
 
@@ -350,10 +354,7 @@ export class ChamadoFormComponent implements OnInit{
   editarOcorrencia(value: any) { 
     this.formOcorrencia = this.ocorrenciaFormBuilder();
     this.tituloModalOcorrencia = `Editando ocorrência ${value.index + 1}`
-    
-
     this.opcoesSKU = [({ 'label': value.sku, 'value': value.sku })];
-
     this.chamadoService.pesquisarSKU(value.sku)
     .then(i => {      
       this.formOcorrencia.patchValue(value);
@@ -490,7 +491,7 @@ export class ChamadoFormComponent implements OnInit{
       label: 'Vincular',
       action: () => {
         this.formChamado.get('contatos')?.setValue(this.contatos);
-        this.poNotificationService.information({
+        this.poNotificationService.success({
           message: `Contatos vinculado ao chamado.`
         });
         this.modalContatos.close();
