@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PoNotificationService, PoPageAction, PoTableColumn } from '@po-ui/ng-components';
 import { ChamadosService } from '../chamados.service';
 import { Router } from '@angular/router';
+import { PageChamadoResumo } from '../model/PageChamadoResumo';
 
 @Component({
   selector: 'app-chamados-pesquisa',
@@ -20,7 +21,8 @@ export class ChamadosPesquisaComponent implements OnInit{
 
   private paginacao = {
     size: 12,
-    page: 0
+    page: 0,
+    last: false
   }
 
   constructor(
@@ -37,30 +39,31 @@ export class ChamadosPesquisaComponent implements OnInit{
 
   public carregaChamados(): void {
     this.carregandoChamados = true;
-    this.chamadosService.pesquisar(this.pesquisaNomeCliente, this.paginacao)
-      .then(
-        clientes => {
-          this.chamados = this.adicionarAcoes(clientes['content']);
-          this.carregandoChamados = false;
-        })
-      .catch(
-        (erro) => this.poNotificationService.error({message: 'Não foi possível carregar os clientes.'}))
+    this.chamadosService.pesquisar(this.pesquisaNomeCliente, this.paginacao).subscribe({
+      next: (pageChamadoResumo: PageChamadoResumo) => {
+        this.chamados = this.adicionarAcoes(pageChamadoResumo.content);
+        this.paginacao.last = pageChamadoResumo.last;
+        this.carregandoChamados = false;
+      },
+      error: () => this.poNotificationService.error({message: 'Não foi possível carregar os clientes.'})
+    })
   }
 
   public carregarMaisChamados() : void {
+    if (this.paginacao.last) {
+      this.poNotificationService.warning({message: 'Não há mais chamado para carregar.' });
+      return;
+    }
     this.carregandoChamados = true;
     this.paginacao.page++;
-    this.chamadosService.pesquisar(this.pesquisaNomeCliente,this.paginacao)
-      .then(
-        chamados => {
-          this.chamados = this.chamados.concat(this.adicionarAcoes(chamados['content']))
-          this.carregandoChamados = false;
-        }
-      )
-      .catch( erro => this.poNotificationService.error({
-          message: 'Não foi possível carregar novos chamado.'
-        })
-      )
+    this.chamadosService.pesquisar(this.pesquisaNomeCliente,this.paginacao).subscribe({
+      next: (pageChamadoResumo: PageChamadoResumo) => {
+        this.chamados = this.chamados.concat(this.adicionarAcoes(pageChamadoResumo.content))
+        this.paginacao.last = pageChamadoResumo.last;
+        this.carregandoChamados = false;
+      },
+      error: () => this.poNotificationService.error({message: 'Não foi possível carregar novos chamado.'})
+    })
   }
 
   private carregarAcoes() : void  {
@@ -75,6 +78,7 @@ export class ChamadosPesquisaComponent implements OnInit{
   
   public pesquisar() {
     if (this.pesquisaNomeCliente && this.pesquisaNomeCliente.length > 3) {
+      this.paginacao.page = 0;
       this.carregaChamados();
     } else if (!this.pesquisaNomeCliente) {
       this.carregaChamados();

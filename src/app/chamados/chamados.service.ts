@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
+import { PageChamadoResumo } from './model/PageChamadoResumo';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class ChamadosService {
 
   constructor(private http: HttpClient) { }
 
-  public pesquisar(nome: string, paginacao = { size: 5, page: 0 }) : Promise<any> {
+  public pesquisar(nome: string, paginacao = { size: 5, page: 0 }) : Observable<PageChamadoResumo> {
 
     let params = new HttpParams()
       .append('size',paginacao.size)
@@ -21,19 +22,36 @@ export class ChamadosService {
 
     if (nome) {
       params = params.append('nome', nome);
-      return firstValueFrom(this.http.get(this.chamadosURL, { params }));
+      return this.http.get<PageChamadoResumo>(this.chamadosURL, { params });
     }
-    return firstValueFrom(this.http.get(this.chamadosURL, { params }));
+    return this.http.get<PageChamadoResumo>(this.chamadosURL, { params });
   }
 
   public buscarPorId(id: number) : Promise<any> {
     return firstValueFrom(this.http.get(`${this.chamadosURL}/${id}`));
   }
 
-  public criar(chamado: any) : Promise<any> {
+  public criar(chamado: any) : Promise<any> {   
+    let itens = chamado.itens.map((i:any) => (
+      {
+        produto: { id: i.prodId },
+        serial: i.serial,
+        descricao: i.descricao,
+        posicaoTecnica: i.posicaoTecnica
+      }
+    ));
+
+    let contatos = chamado.contatos.map((c:any) => ({id: c.id}))
+
+    let chamadoInput = {
+      cliente: { id: chamado.cliente.id},
+      itens: itens,
+      contatos: contatos
+    }  
+
     const headers = new HttpHeaders()
     .append('Content-Type', 'application/json');
-    return firstValueFrom(this.http.post(this.chamadosURL, chamado,{ headers }));
+    return firstValueFrom(this.http.post(this.chamadosURL, chamadoInput,{ headers }));
   }
 
   public atualiza(chamado: any) : Promise<any> {
