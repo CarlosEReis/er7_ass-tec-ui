@@ -21,6 +21,12 @@ export const routes: Routes = [
         canActivate: [ AutenticacaoGuard ]
       },
       {
+        path: 'dashboard',
+        loadChildren: () =>
+          import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+        canActivate: [ AutenticacaoGuard ]
+      },
+      {
         path: '',
         redirectTo: 'assistencia',
         pathMatch: 'full',

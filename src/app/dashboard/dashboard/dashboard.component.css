@@ -1,0 +1,24 @@
+.kpi-principal {
+    
+    font-size: 2.5rem !important;
+}
+
+.kpi-icon {
+    color: #0c6c9461;
+    font-size: 3rem !important;
+    position: relative;
+    top: .7rem;
+}
+
+.kpi-quant {
+    font-weight: bold;
+    color: #0c6c94;
+}
+
+.po-icon::before {
+    vertical-align: middle;
+    border-radius: 50%;
+    background-color: #0c6c94;
+    color: #fff;
+    padding: 1rem;
+}

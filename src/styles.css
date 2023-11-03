@@ -57,3 +57,6 @@
 	top: 124px; 
 }
 
+#dash > div:nth-child(1){
+    background-color: #e6e6e6 !important;
+}
