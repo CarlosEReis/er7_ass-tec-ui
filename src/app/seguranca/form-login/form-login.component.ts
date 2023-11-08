@@ -30,7 +30,7 @@ export class FormLoginComponent implements OnInit{
     this.autenticacaoService.
       logar(usuario.login, usuario.password)
         .subscribe({
-          next: () => this.router.navigate(['app']) ,
+          next: () => this.router.navigate(['app', 'dashboard']) ,
           error: () => this.notificationService.error(
             { 
               message: 'Dados de autenticação inválidos.',

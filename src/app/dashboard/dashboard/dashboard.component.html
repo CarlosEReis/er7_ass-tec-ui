@@ -1,0 +1,98 @@
+<po-page-default p-title="Dashboard de Chamados" >
+
+    <po-container class="po-lg-12 po-p-0" id="dash">
+
+        <po-widget class="po-lg-3 po-mb-1 po-pl-0">
+            <po-container [p-no-border]="true">
+                <span class="po-icon po-icon-lock-off kpi-principal kpi-icon abertos po-lg-6" id="abertos"></span>
+                <div class="po-font-title po-text-right kpi-principal kpi-quant po-lg-6" style="font-family: roboto;">✅ {{  this.abertos }}</div>
+                <div class="po-text-right ">Chamados Abertos</div>
+            </po-container>
+        </po-widget>
+
+        <po-widget class="po-lg-3 po-mb-1" >
+            <po-container [p-no-border]="true">
+                <span class="po-icon po-icon-refresh kpi-principal kpi-icon processando po-lg-6" id="processando"></span>
+                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">✅ {{ this.processando }}</div>
+                <div class="po-text-right sample-container-dashboard">Chamados Processando</div>
+            </po-container>
+        </po-widget>
+
+        <po-widget class="po-lg-3 po-mb-1" >
+            <po-container [p-no-border]="true">
+                <span class="po-icon po-icon-lock kpi-principal kpi-icon fechados po-lg-6" id="fechados"></span>
+                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">✅ {{ this.finalizados }}</div>
+                <div class="po-text-right sample-container-dashboard">Chamados Finalizados</div>
+            </po-container>
+        </po-widget>
+
+        <po-widget class="po-lg-3 po-mb-1 po-pr-0" >
+            <po-container [p-no-border]="true">
+                <span class="po-icon po-icon-pushcart kpi-principal kpi-icon qtde-equipamentos po-lg-6" id="qtde-equipamentos"></span>
+                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">🚫 {{ this.qtdeItensAvaliado }}</div>
+                <div class="po-text-right sample-container-dashboard">Equipamentos avaliados</div>
+            </po-container>
+        </po-widget>
+
+
+        <po-widget class="po-lg-9 po-mb-1 po-pl-0"  >
+            <po-chart
+                class="po-md-12"
+                [p-height]="300"
+                p-title="Chamados ABERTO x FECHADOS ✅"
+                [p-categories]="statusChamadoPorMesCategories"
+                [p-series]="statusChamadoPorMesSeries"
+                [p-options]="statusChamadoPorMesSeriesOptionsColumn">
+            </po-chart>
+        </po-widget>
+
+        <po-widget class="po-lg-3 po-mb-1 po-pr-0">
+            <po-chart
+                class="po-md-12"
+                [p-height]="300"
+                p-title="TOP 4 Produtos mais reparados ✅"
+                [p-categories]="top4ProdutosCategories"
+                [p-series]="top4ProdutosSeries"
+                [p-options]="top4ProdutosOptionsColumn"
+            >
+            </po-chart>
+        </po-widget>
+        
+
+        <po-widget class="po-lg-3 po-mb-0 po-pl-0">
+            <po-chart
+                class="po-lg-12"
+                p-title="TOP 3 Clientes com mais chamados ✅"
+                [p-height]="300"
+                [p-series]="top3ClientesSeries"
+                [p-options]="top3ClientesOptionsColumn">
+            </po-chart>
+        </po-widget>
+
+        <po-widget class="po-lg-3 po-mb-0">
+            <po-chart
+                class="po-md-12"
+                p-title="TOP 3 Técnicos ✅"
+                [p-height]="300"
+                [p-options]="top3TecnicosOptionsColumn"
+                [p-categories]="top3TecnicosCategories"
+                [p-series]="top3tecnicosSeries">
+            </po-chart>
+        </po-widget>
+
+        <po-widget class="po-lg-6 po-mb-0 po-pr-0">
+            <po-chart
+                class="po-md-12"
+                p-title="Chamados Aberto e Fechado por dia.✅ "
+                [p-height]="300"
+                [p-options]="statusChamadoPorDiaSeriesOptionsColumn"
+                [p-categories]="statusChamadoPorDiaCategories"
+                [p-series]="statusChamadoPorDiaSeries">
+            </po-chart>
+        </po-widget>
+
+
+    </po-container>
+  
+</po-page-default>
+  

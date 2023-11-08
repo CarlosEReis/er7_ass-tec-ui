@@ -34,7 +34,7 @@ export class ChamadosService {
   public criar(chamado: any) : Promise<any> {   
     let itens = chamado.itens.map((i:any) => (
       {
-        produto: { id: i.prodId },
+        produto: { id: i.id },
         serial: i.serial,
         descricao: i.descricao,
         posicaoTecnica: i.posicaoTecnica

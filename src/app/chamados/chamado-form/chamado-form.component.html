@@ -124,10 +124,11 @@
 
       <po-combo 
         name="sku" 
-        formControlName="sku" 
+        formControlName="id" 
         [p-options]="opcoesSKU"
         (p-input-change)="pesquisarSKU($event)"
         (p-change)="onChangeSKU($event)"
+        
         p-label="SKU" class="po-md-3"> </po-combo>
 
       <po-input name="descProd" formControlName="descProd" p-label="Descrição" class="po-md-5"></po-input>

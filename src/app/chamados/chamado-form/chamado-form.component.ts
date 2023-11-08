@@ -389,11 +389,20 @@ export class ChamadoFormComponent implements OnInit{
     if (!this.isEditandoChamado()) {
       return {
         action: () => {
-          if (!this.isEditandoOcorrencia()) {
-  
+          if (!this.isEditandoOcorrencia()) { 
+            console.log('adicionando');
+            console.log(this.formOcorrencia.value);
+
+            const p = this.formOcorrencia.get('id')?.value
+
+            this.formOcorrencia.get('id')?.setValue(p.id)
+            this.formOcorrencia.get('sku')?.setValue(p.value)
+
             this.formOcorrencia.get('index')?.setValue(this.itens.length);
             this.formOcorrencia.patchValue({ ultimoStatus: 'PENDENTE' });
             this.itens.push(this.formBuilder.group(this.formOcorrencia.value));
+            console.log('>>>>>>>adicionando');
+            console.log(this.formOcorrencia.value);
   
           } else {
           
@@ -511,14 +520,17 @@ export class ChamadoFormComponent implements OnInit{
       .then( (itens) => {
         this.opcoesSKU = [];
         this.opcoesSKU = itens.map(
-          (item: any) => ({ 'label': item.sku, 'value': item.sku, 'descricao': item.nome})); console.log(itens);
+          (item: any) => ({ 'label': item.sku, 'value': item.sku, 'id': item.id, 'descricao': item.nome})); console.log(itens);
           }
       )
   }
 
   onChangeSKU(item: any) {
+    console.log('item',item);
     if (item) {      
       const produto = this.opcoesSKU.find(p => p.value === item);
+      console.log('produto',produto);
+      this.formOcorrencia.get('id')?.setValue(produto)
       this.formOcorrencia.get('descProd')?.setValue(produto.descricao)
     }
   }
