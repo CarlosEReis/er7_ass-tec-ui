@@ -16,6 +16,10 @@ export class DashboardService {
     return this.http.get<any[]>(`${this.chamadosURL}/kpis-principal`);
   }
 
+  public qtdeItensAvaliados() : Observable<any[]> {
+    return this.http.get<any[]>(`${this.chamadosURL}/itens-avaliados`);
+  }
+
   public top4ProdutoDefeito() : Observable<any[]> {
     return this.http.get<any[]>(`${this.chamadosURL}/top4-produtos`);
   }
@@ -31,4 +35,10 @@ export class DashboardService {
   public statusChamadosPorDia() : Observable<any[]> {
     return this.http.get<any[]>(`${this.chamadosURL}/status-chamado-pordia`);
   }
+
+
+  public statusChamadosPorMes() : Observable<any[]> {
+    return this.http.get<any[]>(`${this.chamadosURL}/status-chamado-pormes`);
+  }
+
 }

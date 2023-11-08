@@ -4,7 +4,7 @@
 
         <po-widget class="po-lg-3 po-mb-1 po-pl-0">
             <po-container [p-no-border]="true">
-                <span class="po-icon po-icon-lock-off kpi-principal kpi-icon po-lg-6" ></span>
+                <span class="po-icon po-icon-lock-off kpi-principal kpi-icon abertos po-lg-6" id="abertos"></span>
                 <div class="po-font-title po-text-right kpi-principal kpi-quant po-lg-6" style="font-family: roboto;">✅ {{  this.abertos }}</div>
                 <div class="po-text-right ">Chamados Abertos</div>
             </po-container>
@@ -12,7 +12,7 @@
 
         <po-widget class="po-lg-3 po-mb-1" >
             <po-container [p-no-border]="true">
-                <span class="po-icon po-icon-refresh kpi-principal kpi-icon po-lg-6"></span>
+                <span class="po-icon po-icon-refresh kpi-principal kpi-icon processando po-lg-6" id="processando"></span>
                 <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">✅ {{ this.processando }}</div>
                 <div class="po-text-right sample-container-dashboard">Chamados Processando</div>
             </po-container>
@@ -20,7 +20,7 @@
 
         <po-widget class="po-lg-3 po-mb-1" >
             <po-container [p-no-border]="true">
-                <span class="po-icon po-icon-lock kpi-principal kpi-icon po-lg-6"></span>
+                <span class="po-icon po-icon-lock kpi-principal kpi-icon fechados po-lg-6" id="fechados"></span>
                 <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">✅ {{ this.finalizados }}</div>
                 <div class="po-text-right sample-container-dashboard">Chamados Finalizados</div>
             </po-container>
@@ -28,9 +28,9 @@
 
         <po-widget class="po-lg-3 po-mb-1 po-pr-0" >
             <po-container [p-no-border]="true">
-                <span class="po-icon po-icon-pushcart kpi-principal kpi-icon po-lg-6"></span>
-                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">🚫 266</div>
-                <div class="po-text-right sample-container-dashboard">Média itens</div>
+                <span class="po-icon po-icon-pushcart kpi-principal kpi-icon qtde-equipamentos po-lg-6" id="qtde-equipamentos"></span>
+                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">🚫 {{ this.qtdeItensAvaliado }}</div>
+                <div class="po-text-right sample-container-dashboard">Equipamentos avaliados</div>
             </po-container>
         </po-widget>
 
@@ -39,10 +39,10 @@
             <po-chart
                 class="po-md-12"
                 [p-height]="300"
-                p-title="Chamados ABERTO x FECHADOS 🚫"
-                [p-categories]="categoriesM"
-                [p-options]="abertosXfechadosPorMesOptionColumn"
-                [p-series]="mensal">
+                p-title="Chamados ABERTO x FECHADOS ✅"
+                [p-categories]="statusChamadoPorMesCategories"
+                [p-series]="statusChamadoPorMesSeries"
+                [p-options]="statusChamadoPorMesSeriesOptionsColumn">
             </po-chart>
         </po-widget>
 

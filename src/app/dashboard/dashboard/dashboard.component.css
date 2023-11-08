@@ -18,7 +18,23 @@
 .po-icon::before {
     vertical-align: middle;
     border-radius: 50%;
-    background-color: #0c6c94;
+    --background-color: #439FD9;
     color: #fff;
     padding: 1rem;
+}
+
+.po-icon.abertos::before {
+    background-color: #1F82BF;
+}
+
+.po-icon.processando::before {
+    background-color: #ea9b3ea3;
+}
+
+.po-icon.fechados::before {
+    background-color: #91CDF2;
+}
+
+.po-icon.qtde-equipamentos::before {
+    background-color: #439FD9;
 }
