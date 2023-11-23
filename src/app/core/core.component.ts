@@ -35,7 +35,8 @@ export class CoreComponent {
   readonly menus: Array<PoMenuItem> = [
     { label: 'Home', link: 'dashboard', icon: 'po-icon po-icon-chart-area', shortLabel: 'Home' },
     { label: 'Clientes', link: 'clientes', icon: 'po-icon po-icon-handshake', shortLabel: 'Clientes' },
-    { label: 'Chamados', link: 'chamados', icon: 'po-icon po-icon-news', shortLabel: 'Chamados' }
+    { label: 'Chamados', link: 'chamados', icon: 'po-icon po-icon-news', shortLabel: 'Chamados' },
+    { label: 'Usuários', link: 'usuarios', icon: 'po-icon po-icon-users', shortLabel: 'Usuários' }
   ];
 
   private sair() {  

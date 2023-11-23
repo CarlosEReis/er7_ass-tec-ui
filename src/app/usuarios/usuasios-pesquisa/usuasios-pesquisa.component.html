@@ -1,0 +1,39 @@
+<po-page-default p-title="Pesquisa de Usuários" [p-actions]="acoesPagina">
+ 
+    <po-table 
+        [p-columns]="colunas" 
+        [p-items]="usuario$ |async"
+        [p-hide-columns-manager]="true"
+        [p-striped]="true"
+        [p-loading]="carregandoUsuarios"
+        [p-height]="720"
+        [p-show-more-disabled]="false"
+        [p-literals]="{loadMoreData: 'Carregar mais Clientes'}">
+
+        <ng-template p-table-column-template [p-property]="'permissoes'" let-permissao>
+            <po-tag p-color="color-08" [p-value]="permissao[0]?.nome"></po-tag>
+        </ng-template>
+    </po-table>
+  
+</po-page-default>
+  
+<po-modal #modal p-title="Novo Usuario" [p-primary-action]="usuarioFormModalSalvar()" [p-secondary-action]="usuarioFormModalFechar()">
+<form [formGroup]="usuarioForm">
+    <div class="po-row po-mb-1">
+        <po-input name="nome" formControlName="nome" p-label="Nome" class="po-md-7"></po-input>
+        <po-input name="email" formControlName="email" p-label="E-mail" class="po-md-5"></po-input>
+    </div>
+    <div class="po-row">
+        <po-password name="senha" formControlName="senha" p-label="Senha" class="po-md-4"></po-password>
+        <po-password name="confirmaSenha" formControlName="confirmSenha" p-label="Confirmar senha" class="po-md-4"></po-password>            
+        <po-select 
+            class="po-md-4"
+            name="permissao"
+            p-label="Permisão"
+            (p-change)="selectionaPermissao($event)"
+            p-placeholder="Selecione a permissão"
+            [p-options]="permissoes$ | async">
+            </po-select>
+    </div>
+    </form>
+</po-modal>

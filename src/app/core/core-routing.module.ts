@@ -7,7 +7,13 @@ export const routes: Routes = [
   {
     path: '',
     component: CoreComponent,
-    children: [
+    children: [ 
+      {
+        path: 'usuarios',
+        loadChildren: () => 
+          import('../usuarios/usuarios.module').then((m) => m.UsuariosModule),
+        canActivate: [ AutenticacaoGuard ]
+      },
       {
         path: 'clientes',
         loadChildren: () =>
