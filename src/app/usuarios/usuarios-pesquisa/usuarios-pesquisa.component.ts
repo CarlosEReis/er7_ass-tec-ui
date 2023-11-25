@@ -7,19 +7,18 @@ import { Usuario } from '../model/Usuario';
 
 @Component({
   selector: 'app-usuasios-pesquisa',
-  templateUrl: './usuasios-pesquisa.component.html',
-  styleUrls: ['./usuasios-pesquisa.component.css']
+  templateUrl: './usuarios-pesquisa.component.html',
+  styleUrls: ['./usuarios-pesquisa.component.css']
 })
-export class UsuasiosPesquisaComponent {
+export class UsuariosPesquisaComponent {
 
   public acoesPagina: PoPageAction[] = [];
   public carregandoUsuarios = true;
   public colunas: PoTableColumn[] = [];
   public permissoes$: Observable<any>;
-  public permissoes: any[] = [];
-  permissao = undefined ?? 'cnpj';
+
   public usuarioForm: FormGroup;
-  public usuario$: Observable<any>;
+  public usuarios$: Observable<any>;
 
   @ViewChild(PoModalComponent, { static: true }) poModal!: PoModalComponent;
 
@@ -31,12 +30,12 @@ export class UsuasiosPesquisaComponent {
     this.usuarioForm = this.usuarioFormBuilder();
     this.acoesPagina = this.acoesPaginaConfig();
     this.colunas = this.colunasConfig();
+    this.usuarios$ = this.carregarUsuarios();
     this.permissoes$ = this.usuariosService.listarPermissoes().pipe(
       map( (permisssoes: any) => {
         return permisssoes.map((permissao:any) => ({ label: permissao.nome, value: permissao.id })  )}
       )
     )
-    this.usuario$ = this.carregarUsuarios()
   };
 
   private carregarUsuarios() {
@@ -54,6 +53,7 @@ export class UsuasiosPesquisaComponent {
   }
 
   private usuarioFormModalOpen() : void {
+    this.usuarioForm.reset();
     this.poModal.open();
   }
 
@@ -74,8 +74,8 @@ export class UsuasiosPesquisaComponent {
     .subscribe({
       complete: () => {
         this.poNotificationService.success('Usuário adicionado com sucesso.');
-        this.usuarioForm = this.usuarioFormBuilder();
-        this.usuario$ = this.carregarUsuarios();
+        this.usuarioForm.reset();
+        this.usuarios$ = this.carregarUsuarios();
       },
       error: () => this.poNotificationService.error('Não foi possível adicionar o usuário.')
     })
@@ -85,7 +85,9 @@ export class UsuasiosPesquisaComponent {
     return {
       danger: true,
       label: 'Fechar',
-      action: () => this.poModal.close()
+      action: () => { 
+        this.poModal.close();
+        this.usuarioForm.reset();}
     }
   }
 
@@ -105,12 +107,15 @@ export class UsuasiosPesquisaComponent {
       email: ['', [Validators.required, Validators.email]],
       senha: ['', Validators.required],
       confirmSenha: ['', Validators.required],
-      permissoes: [[], Validators.required]
-    })
+      permissoes: [null , Validators.required]
+    }, { validators: this.validaSenhas })
   }
 
-  public selectionaPermissao(permissao: any) : void {
-    this.usuarioForm.get('permissoes')?.patchValue([{id: permissao}])
+  private validaSenhas(form: FormGroup) {
+    let senha = form.get('senha')?.value;
+    let confirmacao = form.get('confirmSenha')?.value;
+
+    return senha ===  confirmacao ? null : { senhasDivergentes: true }
   }
 
 }

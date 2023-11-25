@@ -2,7 +2,7 @@
  
     <po-table 
         [p-columns]="colunas" 
-        [p-items]="usuario$ |async"
+        [p-items]="usuarios$ |async"
         [p-hide-columns-manager]="true"
         [p-striped]="true"
         [p-loading]="carregandoUsuarios"
@@ -25,12 +25,12 @@
     </div>
     <div class="po-row">
         <po-password name="senha" formControlName="senha" p-label="Senha" class="po-md-4"></po-password>
-        <po-password name="confirmaSenha" formControlName="confirmSenha" p-label="Confirmar senha" class="po-md-4"></po-password>            
+        <po-password name="confirmaSenha" formControlName="confirmSenha" p-error-pattern="As senhas não conferem." [p-pattern]="this.usuarioForm.get('senha')?.value" p-label="Confirmar senha" class="po-md-4"></po-password>            
         <po-select 
             class="po-md-4"
             name="permissao"
-            p-label="Permisão"
-            (p-change)="selectionaPermissao($event)"
+            p-label="Permissão"
+            formControlName="permissoes"
             p-placeholder="Selecione a permissão"
             [p-options]="permissoes$ | async">
             </po-select>

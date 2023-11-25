@@ -17,7 +17,8 @@ export class UsuariosService {
     return this.http.get<any[]>(`${this.usuariosURL}`).pipe(first());
   }
 
-  public salvar(usuario: Usuario) : Observable<any>{
+  public salvar(usuario: Usuario) : Observable<any>{    
+    usuario.permissoes = [ { id: usuario.permissoes } ]
     return this.http.post<any>(`${this.usuariosURL}`, usuario ).pipe(first());
   }
 

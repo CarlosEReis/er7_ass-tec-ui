@@ -2,18 +2,17 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { UsuariosRoutingModule } from './usuarios-routing.module';
-import { UsuasiosPesquisaComponent } from './usuasios-pesquisa/usuasios-pesquisa.component';
+import { UsuariosPesquisaComponent } from './usuarios-pesquisa/usuarios-pesquisa.component';
 import { PoModule, PoTagModule } from '@po-ui/ng-components';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
   declarations: [
-    UsuasiosPesquisaComponent
+    UsuariosPesquisaComponent
   ],
   imports: [
     CommonModule,
-    FormsModule,
     ReactiveFormsModule,
 
     PoModule,
