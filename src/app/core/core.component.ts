@@ -16,11 +16,16 @@ export class CoreComponent {
   readonly appNomeDesc = environment.appNomeDesc;
   user$ = this.usuarioService.retornaUsuario();
   usuario = this.usuarioService.retornaUsuarioObj();
+  menu: PoMenuItem[] = []; 
 
   constructor(
     private usuarioService: UsuarioService,
     private router: Router
-  ) {}
+  ) {
+
+    this.configMenuDefault();
+    this.configMenuAdmin();
+  }
 
   profile: PoToolbarProfile = {
     avatar: './assets/img/foto-carlos.jpg',
@@ -32,12 +37,21 @@ export class CoreComponent {
     { icon: 'po-icon-exit', label: 'Sair', type: 'danger', separator: true, action: this.sair.bind(this)}
   ];
 
-  readonly menus: Array<PoMenuItem> = [
-    { label: 'Home', link: 'dashboard', icon: 'po-icon po-icon-chart-area', shortLabel: 'Home' },
-    { label: 'Clientes', link: 'clientes', icon: 'po-icon po-icon-handshake', shortLabel: 'Clientes' },
-    { label: 'Chamados', link: 'chamados', icon: 'po-icon po-icon-news', shortLabel: 'Chamados' },
-    { label: 'Usuários', link: 'usuarios', icon: 'po-icon po-icon-users', shortLabel: 'Usuários' }
-  ];
+  private configMenuDefault() {
+    this.menu = [
+      { label: 'Home', link: 'dashboard', icon: 'po-icon po-icon-chart-area', shortLabel: 'Home' },
+      { label: 'Clientes', link: 'clientes', icon: 'po-icon po-icon-handshake', shortLabel: 'Clientes' },
+      { label: 'Chamados', link: 'chamados', icon: 'po-icon po-icon-news', shortLabel: 'Chamados' },
+      
+    ];
+  }
+
+  private configMenuAdmin() {
+    if (this.usuarioService.possuiPermissao('ROLE_ADMIN')) {
+      const menuUsuarios: PoMenuItem = { label: 'Usuários', link: 'usuarios', icon: 'po-icon po-icon-users', shortLabel: 'Usuários' };
+      this.menu.push(menuUsuarios);
+    }
+  }
 
   private sair() {  
     this.usuarioService.logout();
