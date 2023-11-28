@@ -48,4 +48,15 @@ export class UsuarioService {
     this.decodificaToken();
   }
 
+  public possuiPermissao(role: string) {
+    const usuario = this.retornaUsuarioObj();
+    return usuario.roles?.includes(role);
+  }
+
+  public possuiQualquerPermissao(rolesRoute: string[]) {
+    for (const roleRoute of rolesRoute) {
+      if( this.possuiPermissao(roleRoute) ) return true;
+    }
+    return false;
+  }
 }

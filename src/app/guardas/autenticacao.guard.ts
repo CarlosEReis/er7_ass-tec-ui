@@ -18,11 +18,22 @@ export class AutenticacaoGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
       if (this.usuarioService.estaLogado()) {
+
+        this.podeAcessarRota(route.data['roles']);
+
         return true;
       }
 
     this.router.navigate(['auth', 'login']);
     return false;
+  }
+
+  podeAcessarRota(rolesRoute: string[]) {
+    if (rolesRoute && !this.usuarioService.possuiQualquerPermissao(rolesRoute)) {
+      this.router.navigate(['nao-autorizado'])
+      return false;
+    }
+    return true;
   }
   
 }
