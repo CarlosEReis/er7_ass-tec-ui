@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { PoModalAction, PoModalComponent, PoNotificationService, PoPageAction, PoTableColumn } from '@po-ui/ng-components';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { UsuariosService } from '../usuarios.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Usuario } from '../model/Usuario';
@@ -42,7 +42,12 @@ export class UsuariosPesquisaComponent {
     this.carregandoUsuarios = true;
     return this.usuariosService.listar()
     .pipe(
-      tap( (v) => this.carregandoUsuarios = false )
+      tap( (usuarios) => this.carregandoUsuarios = false ),
+      catchError( (error) => {
+        this.poNotificationService.error({ message: 'ERRO 403: Você não tem permissão para acessar essa página' });
+        this.carregandoUsuarios = false;
+        return of();
+      })
     );
   }
 
@@ -114,7 +119,6 @@ export class UsuariosPesquisaComponent {
   private validaSenhas(form: FormGroup) {
     let senha = form.get('senha')?.value;
     let confirmacao = form.get('confirmSenha')?.value;
-
     return senha ===  confirmacao ? null : { senhasDivergentes: true }
   }
 
