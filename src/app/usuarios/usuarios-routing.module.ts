@@ -5,7 +5,10 @@ import { AutenticacaoGuard } from '../guardas/autenticacao.guard';
 
 const routes: Routes = [
   { 
-    path: '', component: UsuariosPesquisaComponent, canActivate: [ AutenticacaoGuard ]
+    path: '', 
+    component: UsuariosPesquisaComponent, 
+    canActivate: [ AutenticacaoGuard ],
+    data: { roles: ['ROLE_ADMIN'] }
   }
 ];
 
