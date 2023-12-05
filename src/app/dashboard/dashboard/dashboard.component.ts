@@ -136,7 +136,7 @@ export class DashboardComponent implements AfterViewInit, OnInit{
     .subscribe(
       (dadosDiario: DadosChamadosPorDia[]) => {
         this.statusChamadoPorDiaCategories = this.diasUteisDoMesAtual();
-        this.statusChamadoPorDiaSeries.push({ label: 'Abertos', data: this.formataDadosDiario(dadosDiario, 'FILA'), type: PoChartType.Area, color: '#1F82BF'  })
+        this.statusChamadoPorDiaSeries.push({ label: 'Abertos', data: this.formataDadosDiario(dadosDiario, 'FILA'), type: PoChartType.Area, color: '#035AA6'  })
         this.statusChamadoPorDiaSeries.push({ label: 'Fechados', data: this.formataDadosDiario(dadosDiario, 'FINALIZADO'), type: PoChartType.Area, color: '#91CDF2' })
         
         //this.statusChamadoPorDiaSeries.push({ label: 'Abertos', data: this.geraChamadosDiarios(), type: PoChartType.Area, color: '#1F82BF'  })
@@ -150,11 +150,11 @@ export class DashboardComponent implements AfterViewInit, OnInit{
     .subscribe(
       (dadosMes: any[]) => {
         this.statusChamadoPorMesCategories = this.meses();
-        this.statusChamadoPorMesSeries.push({ label: 'Abertos', data: dadosMes.filter(d => d.status === 'FILA').map(d => d.quantidade), type: PoChartType.Column, color: '#1F82BF' })
-        this.statusChamadoPorMesSeries.push({ label: 'Fechados', data: dadosMes.filter(d => d.status === 'FINALIZADO').map(d => d.quantidade), type: PoChartType.Column, color: '#91CDF2' })
+        //this.statusChamadoPorMesSeries.push({ label: 'Abertos', data: dadosMes.filter(d => d.status === 'FILA').map(d => d.quantidade), type: PoChartType.Column, color: '#035AA6E0' })
+        //this.statusChamadoPorMesSeries.push({ label: 'Fechados', data: dadosMes.filter(d => d.status === 'FINALIZADO').map(d => d.quantidade), type: PoChartType.Column, color: '#439FD9' })
  
-        //this.statusChamadoPorMesSeries.push({ label: 'Abertos', data: this.geraDados, type: PoChartType.Column, color: '#1F82BF' })
-        //this.statusChamadoPorMesSeries.push({ label: 'Fechados', data: this.geraDados, type: PoChartType.Column, color: '#91CDF2' })
+        this.statusChamadoPorMesSeries.push({ label: 'Abertos', data: this.geraDadosMes(), type: PoChartType.Column, color: '#035AA6E0' })
+        this.statusChamadoPorMesSeries.push({ label: 'Fechados', data: this.geraDadosMes(), type: PoChartType.Column, color: '#91CDF2' })
       }
     )  
   }
