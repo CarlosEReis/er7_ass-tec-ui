@@ -76,12 +76,10 @@ export class ChamadoFormComponent implements OnInit{
     this.carregaColunasOcorrencias();
     this.configuraFormChamado();  
     this.configuraFormOcorrencia();
-
-    this.carregarColunasContatos();
-
     setTimeout(() => {
-      this.setarStatus(this.formChamado.get('status')?.value);
+      this.setarStatus('FILA');
     }, 5);
+    this.carregarColunasContatos();
   }
 
   public modoEdicao() : boolean {
@@ -173,7 +171,8 @@ export class ChamadoFormComponent implements OnInit{
           })      
           form.patchValue(item);
           this.itens.push(form);      
-        });  
+        });
+        this.setarStatus(this.formChamado.get('status')?.value);
       }
     )
     
