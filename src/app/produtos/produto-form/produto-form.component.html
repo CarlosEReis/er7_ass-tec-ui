@@ -1,0 +1,19 @@
+<po-page-default [p-title]="titulo" [p-actions]="acoes">
+
+    <form [formGroup]="produtoForm" (ngSubmit)="salvar()">
+        
+        <div class="po-md-6">
+            <po-input p-label="SKU" name="sku" formControlName="sku" ></po-input>
+            <po-input p-label="Nome" name="nome" formControlName="nome" ></po-input>
+            <po-textarea p-label="Descrição" name="descricao" formControlName="descricao" name="descricao" [p-rows]="8">
+            </po-textarea>
+        </div>
+
+        <div class="po-md-6">
+            <!-- imagem -->
+        </div>
+  
+    </form>
+  
+  </po-page-default>
+  
