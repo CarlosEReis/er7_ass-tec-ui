@@ -40,9 +40,9 @@ export class CoreComponent {
   private configMenuDefault() {
     this.menu = [
       { label: 'Home', link: 'dashboard', icon: 'po-icon po-icon-chart-area', shortLabel: 'Home' },
-      { label: 'Clientes', link: 'clientes', icon: 'po-icon po-icon-handshake', shortLabel: 'Clientes' },
       { label: 'Chamados', link: 'chamados', icon: 'po-icon po-icon-news', shortLabel: 'Chamados' },
-      
+      { label: 'Clientes', link: 'clientes', icon: 'po-icon po-icon-handshake', shortLabel: 'Clientes' },
+      { label: 'Produtos', link: 'produtos', icon: 'po-icon po-icon-pallet-full', shortLabel: 'Produto' }
     ];
   }
 
