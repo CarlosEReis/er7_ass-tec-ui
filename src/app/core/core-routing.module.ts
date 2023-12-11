@@ -33,6 +33,11 @@ export const routes: Routes = [
         canActivate: [ AutenticacaoGuard ]
       },
       {
+        path: 'produtos',
+        loadChildren: () => 
+          import('../produtos/produtos.module').then((m) => m.ProdutosModule)
+      },
+      {
         path: '',
         redirectTo: 'assistencia',
         pathMatch: 'full',
