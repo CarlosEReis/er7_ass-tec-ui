@@ -1,0 +1,39 @@
+<po-page-default p-title="Pesquisa de Produtos" [p-actions]="acoes">
+  
+    <form >
+        <div class="po-row po-pb-2">
+        <po-input name="pesquisa" 
+          [(ngModel)]="search" 
+          (p-change-model)="pesquisar()" 
+          p-pattern="[a-z]{4}" 
+          p-error-pattern="Digite pelo menos 4 caractéres" 
+          p-icon="po-icon po-icon-search"
+          p-clean="true"
+          class="po-md-10" 
+          p-placeholder="Pesquise por SKU ou Nome do produto."></po-input>
+        
+        <div class="po-md-2">
+          <div class="po-field-container-content">
+            <po-button (p-click)="pesquisar()" class="po-md-12 po-sm-12" p-label="Pesquisar" p-type="primary"></po-button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <po-table 
+      [p-columns]="colunas" 
+      [p-items]="produtos$ | async"
+      [p-hide-columns-manager]="true"
+      [p-striped]="true"
+      [p-loading]="carregandoProdutos"
+      [p-height]="720"
+      [p-show-more-disabled]="false"
+      (p-show-more)="carregarMaisProdutos()"
+      [p-literals]="{loadMoreData: 'Carregar mais Produtos'}">
+  
+      <ng-template p-table-column-template [p-property]="'descricao'" let-descricao>
+        <span [innerText]=" descricao ? descricao?.substr(0,100 )+ '...' :''"></span>
+      </ng-template>
+    </po-table>
+  
+  </po-page-default>
