@@ -12,9 +12,10 @@ import { ProdutosService } from '../produtos.service';
 export class ProdutoFormComponent implements OnInit{
 
   public titulo = '';
-  public isEdicao = false;
   public produtoForm!: FormGroup;
   public acoes: PoPageAction[] = [];
+  private isEdicao = false;
+  private isVisualizacao = false;
 
   constructor(
     private router: Router,
@@ -29,6 +30,7 @@ export class ProdutoFormComponent implements OnInit{
   ngOnInit(): void {
     const produtoId = this.activatedRoute.snapshot.params['id'];
     this.isEdicao = this.activatedRoute.snapshot.data['modoEdicao'];
+    this.isVisualizacao = this.activatedRoute.snapshot.data['modoVisualizacao'];
 
     if (produtoId) {
       this.titulo = this.isEdicao ?  'Editando Produto' : 'Visualizando Produto'
@@ -43,7 +45,6 @@ export class ProdutoFormComponent implements OnInit{
 
   public salvar() : void {
     const produto =this.produtoForm.value;
-    console.log(produto);
     this.produtoService.criar(produto).subscribe({
       complete: () => {
         this.poNotificationService.success({ message: 'Produto salva com SelectControlValueAccessor.' });
@@ -56,7 +57,9 @@ export class ProdutoFormComponent implements OnInit{
   private atualizar() {
     this.produtoService.atualizar(this.produtoForm.get('id')?.value, this.produtoForm.value)
     .subscribe({
-      complete: () => this.poNotificationService.success({ message: 'Produto atualizado com sucesso.' }),
+      complete: () => {
+        this.poNotificationService.success({ message: 'Produto atualizado com sucesso.' });
+        this.router.navigate(['app', 'produtos'])},
       error: () => this.poNotificationService.error({ message: 'Não foi possível atualizar o produto.' })
     });
   }
@@ -75,11 +78,14 @@ export class ProdutoFormComponent implements OnInit{
     if (this.isEdicao) {
       this.acoes.push(
         { label: 'Atualizar', action: () => this.atualizar(), disabled: () => this.produtoForm.invalid })
-    } else {
+    }
+
+    if (!this.isEdicao && !this.isVisualizacao){
       this.acoes.push(
         { label: 'Salvar', action: () => this.salvar(), disabled: () => this.produtoForm.invalid })
     }
-    
+
+
     this.acoes.push(
       { label: 'Voltar', action: () => this.router.navigate(['app/produtos']) })
   }
