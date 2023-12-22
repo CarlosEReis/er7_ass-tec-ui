@@ -17,9 +17,18 @@ export class UsuariosService {
     return this.http.get<any[]>(`${this.usuariosURL}`).pipe(first());
   }
 
+  public buscar(usuarioId: number) : Observable<any>{
+    return this.http.get(`${this.usuariosURL}/${usuarioId}`);
+  }
+
   public salvar(usuario: Usuario) : Observable<any>{    
     usuario.permissoes = [ { id: usuario.permissoes } ]
     return this.http.post<any>(`${this.usuariosURL}`, usuario ).pipe(first());
+  }
+
+  public atualizar(usuario: Usuario) : Observable<any> {
+    usuario.permissoes = [ { id: usuario.permissoes } ]
+    return this.http.put(`${this.usuariosURL}/${usuario.id}`, usuario)
   }
 
   public listarPermissoes() : Observable<any[]> {

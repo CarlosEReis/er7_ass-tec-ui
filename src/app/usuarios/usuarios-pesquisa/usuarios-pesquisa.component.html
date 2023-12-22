@@ -11,14 +11,22 @@
         [p-literals]="{loadMoreData: 'Carregar mais Clientes'}">
 
         <ng-template p-table-column-template [p-property]="'permissoes'" let-permissao>
-            <po-tag p-color="color-08" [p-value]="permissao[0]?.nome"></po-tag>
+            <div *ngIf="permissao[0]?.nome == 'ROLE_ADMIN'">
+                <po-tag p-color="color-07" p-text-color="#fff" [p-value]="permissao[0]?.nome"></po-tag>
+            </div>
+            <div *ngIf="permissao[0]?.nome == 'ROLE_GESTOR'">
+                <po-tag p-color="color-08" p-text-color="#fff" [p-value]="permissao[0]?.nome"></po-tag>
+            </div>
+            <div *ngIf="permissao[0]?.nome == 'ROLE_TECNICO'">
+                <po-tag p-color="color-02" p-text-color="#fff" [p-value]="permissao[0]?.nome"></po-tag>
+            </div>
         </ng-template>
     </po-table>
   
 </po-page-default>
   
-<po-modal #modal p-title="Novo Usuario" [p-primary-action]="usuarioFormModalSalvar()" [p-secondary-action]="usuarioFormModalFechar()">
-<form [formGroup]="usuarioForm">
+<po-modal #modal [p-title]="isNovoUsuario() ? 'Novo Usuario' : 'Editando Usuário'" [p-primary-action]="usuarioFormModalSalvar()" [p-secondary-action]="usuarioFormModalFechar()">
+<form [formGroup]="usuarioForm" [autocomplete]="false">
     <div class="po-row po-mb-1">
         <po-input name="nome" formControlName="nome" p-label="Nome" class="po-md-7"></po-input>
         <po-input name="email" formControlName="email" p-label="E-mail" class="po-md-5"></po-input>

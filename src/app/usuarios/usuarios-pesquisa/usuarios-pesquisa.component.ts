@@ -43,6 +43,7 @@ export class UsuariosPesquisaComponent {
     return this.usuariosService.listar()
     .pipe(
       tap( (usuarios) => this.carregandoUsuarios = false ),
+      map((x) => x.map((produto: any) => this.adicionarAcoes(produto))),
       catchError( (error) => {
         this.poNotificationService.error({ message: 'ERRO 403: Você não tem permissão para acessar essa página' });
         this.carregandoUsuarios = false;
@@ -65,13 +66,30 @@ export class UsuariosPesquisaComponent {
   protected usuarioFormModalSalvar() : PoModalAction {
     return {
       disabled: this.usuarioForm.invalid,
-      label: 'Salvar',
+      label: this.isNovoUsuario() ? 'Salvar' : 'Atualizar',
       action: () => {
-        this.salvarUsuario(this.usuarioForm.value);
+        const usuario = this.usuarioForm.value
+        this.isNovoUsuario() ? this.salvarUsuario(usuario) : this.atualizarUsuario(usuario);
         this.usuarioForm.reset();
         this.poModal.close();
       }
     }
+  }
+
+  protected isNovoUsuario() {
+    return this.usuarioForm.get('id')?.value ? false : true;;
+  }
+
+  private atualizarUsuario(usuario: Usuario) {
+    this.usuariosService.atualizar(usuario)
+    .subscribe({
+      complete: () => {
+        this.poNotificationService.success('Usuário atualizado com sucesso.');
+        this.usuarioForm.reset();
+        this.usuarios$ = this.carregarUsuarios();
+      },
+      error: () => this.poNotificationService.error('Não foi possível atualizar o usuário.')
+    })
   }
 
   private salvarUsuario(usuario: Usuario) {
@@ -84,6 +102,14 @@ export class UsuariosPesquisaComponent {
       },
       error: () => this.poNotificationService.error('Não foi possível adicionar o usuário.')
     })
+  }
+
+  private carregarUsuario(usuario: any) : void {
+    this.usuariosService.buscar(usuario.id).subscribe(
+      usuario => {
+        this.usuarioForm.patchValue(usuario);
+        this.usuarioForm.get("permissoes")?.setValue(usuario.permissoes[0].id)}
+    )
   }
 
   protected usuarioFormModalFechar() : PoModalAction { 
@@ -102,6 +128,17 @@ export class UsuariosPesquisaComponent {
       { label: 'Nome', property: 'nome' },
       { label: 'E-mail', property: 'email' },
       { label: 'Permissão', property: 'permissoes', type: 'columnTemplate',  },
+      { label: 'Ações', property: 'acoes', type: 'icon', icons: [
+        {
+          icon: 'po-icon-export',
+          tooltip: 'Editar',
+          value: 'editar',
+          action: (value: any) => {
+            this.carregarUsuario(value);
+            this.usuarioFormModalOpen();
+          }
+        }
+      ]}
     ]
   }
 
@@ -112,7 +149,7 @@ export class UsuariosPesquisaComponent {
       email: ['', [Validators.required, Validators.email]],
       senha: ['', Validators.required],
       confirmSenha: ['', Validators.required],
-      permissoes: [null , Validators.required]
+      permissoes: ['' , Validators.required]
     }, { validators: this.validaSenhas })
   }
 
@@ -120,6 +157,10 @@ export class UsuariosPesquisaComponent {
     let senha = form.get('senha')?.value;
     let confirmacao = form.get('confirmSenha')?.value;
     return senha ===  confirmacao ? null : { senhasDivergentes: true }
+  }
+
+  private adicionarAcoes(produto: any) : any {
+    return produto = ({ ...produto, acoes: ['visualizar', 'editar']});
   }
 
 }
