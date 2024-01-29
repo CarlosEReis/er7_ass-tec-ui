@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom, map, take } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { PageChamadoResumo } from './model/PageChamadoResumo';
 
@@ -70,7 +70,11 @@ export class ChamadosService {
     return firstValueFrom(this.http.post(`${this.chamadosURL}/${idChamado}/alteracao-status-item/${idItemChamado}`, status, {headers}));
   }
 
-  public pesquisarSKU(sku : string) : Promise<any>{
-    return firstValueFrom(this.http.get(`${this.produtosURL}?sku=${sku}`));
+  public pesquisarSKU(sku : string) : Observable<any>{
+    return this.http.get(`${this.produtosURL}?search=${sku}`)
+      .pipe(
+        take(1),
+        map(
+          (response: any ) => response['content']));
   }
 }

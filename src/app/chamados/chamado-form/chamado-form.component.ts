@@ -355,15 +355,13 @@ export class ChamadoFormComponent implements OnInit{
     this.tituloModalOcorrencia = `Editando ocorrência ${value.index + 1}`
     this.opcoesSKU = [({ 'label': value.sku, 'value': value.sku })];
     this.chamadoService.pesquisarSKU(value.sku)
-    .then(i => {      
+    .subscribe(i => {                  
       this.formOcorrencia.patchValue(value);
       this.formOcorrencia.get('sku')?.setValue(i[0].sku)
       this.formOcorrencia.get('descProd')?.setValue(i[0].nome);
       this.poModal.primaryAction = this.btnModalItemPrimary();
       this.poModal.open();
-    })
-    .catch();
-    
+    })   
   }
 
   public isEditandoChamado(): boolean {
@@ -516,7 +514,7 @@ export class ChamadoFormComponent implements OnInit{
   pesquisarSKU(sku : string) : void {
     if (sku.length >= 2) 
       this.chamadoService.pesquisarSKU(sku)
-      .then( (itens) => {
+      .subscribe( (itens) => {
         this.opcoesSKU = [];
         this.opcoesSKU = itens.map(
           (item: any) => ({ 'label': item.sku, 'value': item.sku, 'id': item.id, 'descricao': item.nome})); console.log(itens);
