@@ -54,7 +54,6 @@ export class FormLoginComponent implements OnInit{
 
     this.timeSetInterval = setInterval(() => {
       this.backgroundImageAtual = array[index];
-      console.log(array[index]);
       index++;
   
       if (index === array.length) {
