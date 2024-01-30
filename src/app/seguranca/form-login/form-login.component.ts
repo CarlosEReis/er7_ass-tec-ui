@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { AutenticacaoService } from '../autenticacao.service';
-import { catchError, interval } from 'rxjs';
 import { PoNotificationService } from '@po-ui/ng-components';
 import { Router } from '@angular/router';
 
@@ -13,6 +12,7 @@ import { Router } from '@angular/router';
 export class FormLoginComponent implements OnInit{
 
   readonly ambiente = environment.environment;
+  private timeSetInterval!: NodeJS.Timer;
 
   backgroundImageAtual = '';
 
@@ -30,7 +30,10 @@ export class FormLoginComponent implements OnInit{
     this.autenticacaoService.
       logar(usuario.login, usuario.password)
         .subscribe({
-          next: () => this.router.navigate(['app', 'dashboard']) ,
+          next: () => {
+            clearInterval(this.timeSetInterval)
+            this.router.navigate(['app', 'dashboard'])
+          } ,
           error: () => this.notificationService.error(
             { 
               message: 'Dados de autenticação inválidos.',
@@ -45,20 +48,19 @@ export class FormLoginComponent implements OnInit{
       './assets/img/login-img-02.jpeg',
       './assets/img/login-img-03.jpeg',
       './assets/img/login-img-04.jpeg',
-    ]; // Seu array de números
+    ];
     let index = 0;
     this.backgroundImageAtual = array[index];
 
-    setInterval(() => {
+    this.timeSetInterval = setInterval(() => {
       this.backgroundImageAtual = array[index];
       console.log(array[index]);
       index++;
   
       if (index === array.length) {
           index = 0;
-          //clearInterval(intervalId);
       }
-  }, 5000);
+    }, 5000);
   }
 
 }
