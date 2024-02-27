@@ -18,7 +18,8 @@ export class ChamadosService {
 
     let params = new HttpParams()
       .append('size',paginacao.size)
-      .append('page', paginacao.page);
+      .append('page', paginacao.page)
+      .append('sort', 'id,desc')
 
     if (nome) {
       params = params.append('nome', nome);
