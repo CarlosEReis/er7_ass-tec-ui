@@ -78,4 +78,10 @@ export class ChamadosService {
         map(
           (response: any ) => response['content']));
   }
+
+  public retornarStatus(chamadoID: number, status: string) : Observable<any> {
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+    const body = status; // Alterado aqui
+    return this.http.post(`${this.chamadosURL}/${chamadoID}/alteracao-status`, status, { headers }).pipe(take(1));
+  }
 }

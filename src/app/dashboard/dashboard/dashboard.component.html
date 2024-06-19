@@ -35,7 +35,15 @@
         </po-widget>
 
 
-        <po-widget class="po-lg-9 po-mb-1 po-pl-0"  >
+        <po-widget class="po-lg-9 po-mb-1 po-pl-0" style="position: relative;" >
+
+            <po-select style="position: absolute; top: .5rem; right: 1.5rem;"
+                name="city" 
+                [ngModel]="ano"
+                (p-change)="aoSelecionarAno($event)"
+                [p-options]="anos">
+          </po-select>
+
             <po-chart
                 class="po-md-12"
                 [p-height]="300"
@@ -53,8 +61,7 @@
                 p-title="TOP 4 Produtos mais reparados ✅"
                 [p-categories]="top4ProdutosCategories"
                 [p-series]="top4ProdutosSeries"
-                [p-options]="top4ProdutosOptionsColumn"
-            >
+                [p-options]="top4ProdutosOptionsColumn">
             </po-chart>
         </po-widget>
         

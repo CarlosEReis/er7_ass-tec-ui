@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PoModule } from '@po-ui/ng-components';
-
+import { PoFieldModule } from '@po-ui/ng-components';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -13,8 +14,10 @@ import { PoModule } from '@po-ui/ng-components';
   imports: [
     CommonModule,
     DashboardRoutingModule,
+    FormsModule,
 
-    PoModule
+    PoModule,
+    PoFieldModule
   ]
 })
 export class DashboardModule { }

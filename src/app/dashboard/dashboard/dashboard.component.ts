@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
-import { PoChartOptions, PoChartSerie, PoChartType } from '@po-ui/ng-components';
+import { PoButtonGroupItem, PoChartOptions, PoChartSerie, PoChartType, PoNotificationService, PoSelectOption } from '@po-ui/ng-components';
 import { DashboardService } from '../dashboard.service';
-
+import { EventService } from 'src/app/core/event.service';
 
 export interface DadosChamadosPorDia {
   status: string;
@@ -15,12 +15,24 @@ export interface DadosChamadosPorMes {
   mes: number
 }
 
+enum EventType {
+  CHAMADO_CRIADO = 'CHAMADO_CRIADO',
+  CHAMADO_PROCESSANDO = 'CHAMADO_PROCESSANDO',
+  CHAMADO_FINALIZADO = 'CHAMADO_FINALIZADO'
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements AfterViewInit, OnInit{
+
+  attendances: Array<PoButtonGroupItem> = [
+    { label: '2024', icon: 'po-icon-calendar', action: () => alert('teste') },
+    { label: '2023', icon: 'po-icon-injector', action: () => alert('teste') },
+    { label: '2022', icon: 'po-icon-exam', action: () => alert('teste') }
+  ];
 
   public abertos: number = 0;
   public processando: number = 0;
@@ -50,25 +62,80 @@ export class DashboardComponent implements AfterViewInit, OnInit{
   public statusChamadoPorMesSeries: PoChartSerie[] = [];
   public statusChamadoPorMesSeriesOptionsColumn = {legend: false, axis: {gridLines: 3, minRange: 0}}
 
+  public ano = 2023;
+  private filtroData = { dataInicial: new Date(`${this.ano}-01-01`), dataFinal: new Date(`${this.ano}-12-30`) }
+
+  public anos: PoSelectOption[] = [
+    { label: '2021', value: 2021},
+    { label: '2022', value: 2022},
+    { label: '2023', value: 2023},
+    {label: '2024', value: 2024}
+  ]
+  public aoSelecionarAno(ano: number) {
+    this.ano = ano;
+    this.filtroData = { dataInicial: new Date(`${this.ano}-01-01`), dataFinal: new Date(`${this.ano}-12-30`) }
+    this.carregaInfoDashboard(this.ano);
+  }
 
   constructor(
     private elRef: ElementRef,
-    private dashboardService: DashboardService
+    private eventService: EventService,
+    private dashboardService: DashboardService,
+    private poNotificationService: PoNotificationService
   ) { }
 
   ngOnInit(): void {
-    this.configuraKPIsPrincipal();
-    this.configuraTOP4produtos();
-    this.configuraTOP3Clientes();
-    this.configuraTOP3Tecnicos();
+    this.dashboardService.statusAbertosFechadosMes({top: 3, dataInicial: this.filtroData.dataInicial, dataFinal: this.filtroData.dataFinal}).subscribe(  );
+
+    this.carregaInfoDashboard(this.ano);
+
+    this.ano = 2024
+
+    this.eventService.events.subscribe((event: MessageEvent) => {
+      if (event) {        
+  
+          if (event.type === EventType.CHAMADO_CRIADO) {
+            this.configuraKPIsPrincipal();
+            this.configuraTOPprodutos();
+            this.configuraTOPClientes();
+            this.configuraStatusDiario();
+            this.configuraStatusMensal();
+          }
+  
+          if (event.type === EventType.CHAMADO_PROCESSANDO) {
+            this.configuraKPIsPrincipal();
+          }
+  
+          if (event.type === EventType.CHAMADO_FINALIZADO) {
+            this.configuraKPIsPrincipal();
+            this.configuraTOPprodutos();
+            this.configuraTOPClientes();
+            this.configuraTOPTecnicos();
+            this.configuraStatusDiario();
+            this.configuraStatusMensal();
+          }
+      }
+    })
+  }
+
+  private carregaInfoDashboard(ano: number) {
+    //  this.configuraKPIsPrincipal();
+    this.configuraTOPprodutos();
+    //this.configuraTOPClientes();
+    this.configuraTOPTecnicos();
     this.configuraStatusDiario();
     this.configuraStatusMensal();
   }
 
   private configuraKPIsPrincipal() : void {
-    this.dashboardService.kpisPrincipais()
+    this.dashboardService.kpisPrincipais({top: 0, dataInicial: this.filtroData.dataInicial, dataFinal: this.filtroData.dataFinal})
     .subscribe(
       (kpis: any[]) => {
+
+        this.abertos = 0;
+        this.processando  = 0;
+        this.finalizados  = 0;
+
         kpis.forEach(kpi => {
           switch (kpi.status) {
             case 'FILA': this.abertos = kpi.quantidade
@@ -83,13 +150,17 @@ export class DashboardComponent implements AfterViewInit, OnInit{
         });
       }
     );
-    this.dashboardService.qtdeItensAvaliados()
-    .subscribe((dado: any) => this.qtdeItensAvaliado = dado.quantidade)
+    /*this.dashboardService.qtdeItensAvaliados({top: 0, dataInicial: this.filtroData.dataInicial, dataFinal: this.filtroData.dataFinal})
+    .subscribe((dado: any) => {
+      this.qtdeItensAvaliado  = 0;
+      this.qtdeItensAvaliado = dado.quantidade})*/
   }
 
-  private configuraTOP4produtos() : void {
-    this.dashboardService.top4ProdutoDefeito()
+  private configuraTOPprodutos() : void {
+    this.top4ProdutosSeries = [];
+    this.dashboardService.top4ProdutoDefeito({top: 2, dataInicial: this.filtroData.dataInicial, dataFinal: this.filtroData.dataFinal})
     .subscribe((produtos: any) => {
+      this.top4ProdutosSeries = [];
       this.top4ProdutosCategories = produtos.map((prod: any) => prod.sku)
       this.top4ProdutosSeries.push({
         label: 'Quantidade',
@@ -100,10 +171,11 @@ export class DashboardComponent implements AfterViewInit, OnInit{
     });
   }
 
-  private configuraTOP3Clientes() : void {
-    this.dashboardService.top3ClientesComMaisChamados()
+  private configuraTOPClientes() : void {
+    this.top3ClientesSeries = [];
+    this.dashboardService.topClientesComMaisChamados({top: 2, dataInicial: this.filtroData.dataInicial, dataFinal: this.filtroData.dataFinal})
     .subscribe((clientes: any[]) => {
-
+      
       const cores = ['#035AA6', '#439FD9', '#91CDF2']
       let cor = 0;
 
@@ -118,9 +190,11 @@ export class DashboardComponent implements AfterViewInit, OnInit{
     })
   }
   
-  private configuraTOP3Tecnicos() : void {
-    this.dashboardService.top3TecnicosComMaisChamados()
-    .subscribe((tecnicos: any) => {
+  private configuraTOPTecnicos() : void {
+    this.top3tecnicosSeries = [];
+    this.dashboardService.topTecnicosComMaisChamados({top: 3, dataInicial: this.filtroData.dataInicial, dataFinal: this.filtroData.dataFinal})
+    .subscribe((tecnicos: any) => {   
+      this.top3tecnicosSeries = []
       this.top3TecnicosCategories = tecnicos.map((tecnico: any) => (tecnico.tecnico as string).split(' ')[0])
         this.top3tecnicosSeries.push({
         label: 'Quantidade',
@@ -132,12 +206,29 @@ export class DashboardComponent implements AfterViewInit, OnInit{
   }
 
   private configuraStatusDiario() : void {
-    this.dashboardService.statusChamadosPorDia()
+    this.statusChamadoPorDiaSeries = [];
+
+    var diasMes = this.diasUteisDoMesAtual();    
+    var abertos: number[] = [];
+    var fechados: number[] = [];
+    
+    this.dashboardService.statusAbertosFechadosDia({top: 0, dataInicial: new Date('2023-12-01'), dataFinal: new Date('2023-12-30')})
     .subscribe(
-      (dadosDiario: DadosChamadosPorDia[]) => {
-        this.statusChamadoPorDiaCategories = this.diasUteisDoMesAtual();
-        this.statusChamadoPorDiaSeries.push({ label: 'Abertos', data: this.formataDadosDiario(dadosDiario, 'FILA'), type: PoChartType.Area, color: '#035AA6'  })
-        this.statusChamadoPorDiaSeries.push({ label: 'Fechados', data: this.formataDadosDiario(dadosDiario, 'FINALIZADO'), type: PoChartType.Area, color: '#91CDF2' })
+      (dadosDiario: any[]) => {
+
+        diasMes.forEach(d => {
+          dadosDiario.forEach(dd => {
+            var dia = (dd.data as unknown as string).split('-')[2];
+            if (parseInt(d) === parseInt(dia)) {
+              abertos.push(dd.abertos);
+              fechados.push(dd.fechados)
+            }
+          })
+        })
+
+        this.statusChamadoPorDiaCategories = diasMes;
+        this.statusChamadoPorDiaSeries.push({ label: 'Abertos', data: abertos, type: PoChartType.Area, color: '#035AA6'  })
+        this.statusChamadoPorDiaSeries.push({ label: 'Fechados', data: fechados, type: PoChartType.Area, color: '#91CDF2' })
         
         //this.statusChamadoPorDiaSeries.push({ label: 'Abertos', data: this.geraChamadosDiarios(), type: PoChartType.Area, color: '#1F82BF'  })
         //this.statusChamadoPorDiaSeries.push({ label: 'Fechados', data: this.geraChamadosDiarios(), type: PoChartType.Area, color: '#91CDF2' })
@@ -146,15 +237,25 @@ export class DashboardComponent implements AfterViewInit, OnInit{
   }
 
   private configuraStatusMensal() : void {
-    this.dashboardService.statusChamadosPorMes()
+    this.statusChamadoPorMesSeries = [];
+    this.dashboardService.statusAbertosFechadosMes({top: 0, dataInicial: this.filtroData.dataInicial, dataFinal: this.filtroData.dataFinal})
     .subscribe(
       (dadosMes: any[]) => {
         this.statusChamadoPorMesCategories = this.meses();
-        //this.statusChamadoPorMesSeries.push({ label: 'Abertos', data: dadosMes.filter(d => d.status === 'FILA').map(d => d.quantidade), type: PoChartType.Column, color: '#035AA6E0' })
-        //this.statusChamadoPorMesSeries.push({ label: 'Fechados', data: dadosMes.filter(d => d.status === 'FINALIZADO').map(d => d.quantidade), type: PoChartType.Column, color: '#439FD9' })
- 
-        this.statusChamadoPorMesSeries.push({ label: 'Abertos', data: this.geraDadosMes(), type: PoChartType.Column, color: '#035AA6E0' })
-        this.statusChamadoPorMesSeries.push({ label: 'Fechados', data: this.geraDadosMes(), type: PoChartType.Column, color: '#91CDF2' })
+        this.statusChamadoPorMesSeries = [];
+        this.statusChamadoPorMesSeries.push({ label: 'Abertos', data: [0,0,0,0,0,0,0,0,0,0,0,0], type: PoChartType.Column, color: '#035AA6E0' })
+        this.statusChamadoPorMesSeries.push({ label: 'fechados', data: [0,0,0,0,0,0,0,0,0,0,0,0], type: PoChartType.Column, color: '#439FD9' })
+
+        var dadosAbertos = this.statusChamadoPorMesSeries[0].data as number[]; 
+        var dadosFechados = this.statusChamadoPorMesSeries[1].data as number[];       
+
+        dadosMes.forEach(x => {
+          var mes =new Date(x.data).getMonth();          
+          dadosAbertos[mes] = x.abertos;
+          dadosFechados[mes] = x.fechados;
+        })
+        //this.statusChamadoPorMesSeries.push({ label: 'Abertos', data: this.geraDadosMes(), type: PoChartType.Column, color: '#035AA6E0' })
+        //this.statusChamadoPorMesSeries.push({ label: 'Fechados', data: this.geraDadosMes(), type: PoChartType.Column, color: '#91CDF2' })
       }
     )  
   }

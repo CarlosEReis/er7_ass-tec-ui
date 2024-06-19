@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    apiUrl: 'http://192.168.1.3:8080',
+    apiUrl: 'https://er7-assistencia-tecnica-api.azurewebsites.net',
     appNomeDesc: 'ER7 System: Sistema para gerenciamento de chamados técnicos.',
     environment: 'Ambiente de Testes'
 };

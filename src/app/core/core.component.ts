@@ -1,37 +1,61 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { PoMenuItem, PoToolbarAction, PoToolbarProfile } from '@po-ui/ng-components';
+import { PoMenuItem, PoNotificationService, PoToolbarAction, PoToolbarProfile } from '@po-ui/ng-components';
 
 import { environment } from 'src/environments/environment.development';
 import { UsuarioService } from '../seguranca/usuario.service';
+import { EventService } from './event.service';
 
 @Component({
   selector: 'app-core',
   templateUrl: './core.component.html',
   styleUrls: ['./core.component.css']
 })
-export class CoreComponent {
+export class CoreComponent implements OnInit{
+  private readonly produtosURL = environment.apiUrl.concat('/events/api-events')
 
   readonly appNomeDesc = environment.appNomeDesc;
   user$ = this.usuarioService.retornaUsuario();
   usuario = this.usuarioService.retornaUsuarioObj();
   menu: PoMenuItem[] = []; 
 
+  profile: PoToolbarProfile = {
+    avatar: './assets/img/foto-carlos.jpg',
+    subtitle: this.usuario.sub+'',
+    title: this.usuario.user+''
+  };
+
   constructor(
     private usuarioService: UsuarioService,
-    private router: Router
+    private router: Router,
+    private eventService: EventService,
+    private poNotificationService: PoNotificationService
   ) {
 
     this.configMenuDefault();
     this.configMenuAdmin();
   }
 
-  profile: PoToolbarProfile = {
-    avatar: './assets/img/foto-carlos.jpg',
-    subtitle: this.usuario.sub+'',
-    title: this.usuario.user+''
-  };
+  ngOnInit(): void {
+    this.eventService.getServerSentEvent(this.produtosURL).subscribe({});
+
+    this.eventService.events.subscribe((event: MessageEvent) => {
+      if (event) {
+        this.notificar(event.type)
+      }
+    })
+  }
+
+  private notificar(eventType: string) {
+    if (eventType) {      
+      this.poNotificationService.success({
+        message: `Chamado ${eventType}.`
+      })
+    }
+  }
+
+
 
   readonly profileActions: Array<PoToolbarAction> = [
     { icon: 'po-icon-exit', label: 'Sair', type: 'danger', separator: true, action: this.sair.bind(this)}

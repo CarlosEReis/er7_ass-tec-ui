@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Type, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { PoComboOption,
   PoModalAction, 
@@ -13,6 +13,7 @@ import { ChamadosService } from '../chamados.service';
 import { ClientesService } from 'src/app/clientes/clientes.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageClienteResumo } from 'src/app/clientes/model/ClienteResumo';
+import { last } from 'rxjs';
 
 interface AlteraStatus {
   status: string;
@@ -193,7 +194,9 @@ export class ChamadoFormComponent implements OnInit{
     if (this.modoEdicao() ) {
       this.acoesPagina.push(
         { label: 'Salvar', action: this.salvarChamado.bind(this) }, 
-        { label: 'Ficha', action: this.geraFichaChamado.bind(this) });
+        { label: 'Ficha', action: this.geraFichaChamado.bind(this) },
+        { label: 'Retonar status', type: 'danger', action: this.voltaStatus.bind(this), disabled: () => this.formChamado.get('status')?.value === 'FILA' });
+
     }
     
     if (this.modoVisualizacao()) {
@@ -203,8 +206,27 @@ export class ChamadoFormComponent implements OnInit{
     
   }
 
+  private voltaStatus() {
+    var chamadoID = this.formChamado.get('id')?.value;
+    var statusAtual = this.formChamado.get('status')?.value;
+    var statusAlterar = '';
+
+    if(statusAtual === 'FINALIZADO') statusAlterar = 'PROCESSANDO';      
+
+    if (statusAtual === 'PROCESSANDO') statusAlterar = 'FILA';
+
+    this.chamadoService.retornarStatus(chamadoID, statusAlterar).subscribe({
+      next: (response) => {
+        this.buscarChamado(chamadoID)
+        this.poNotificationService.success({ message: `Status do pedido ${chamadoID} alterado para ${statusAlterar} com sucesso.` })
+      },
+      error: (err) => {
+        this.poNotificationService.error({ message: `Não foi possível alterar o status do pedido ${chamadoID}.` })
+      },
+    }) 
+  }
+
   public pesquisarCliente(input: string) : void {
-    
     if (input.length > 3) {      
       this.clienteService.pesquisar(input).subscribe({
         next: (pageClientes: PageClienteResumo) => {
@@ -225,7 +247,9 @@ export class ChamadoFormComponent implements OnInit{
           cliente => {
             this.formChamado.get('cliente')?.patchValue(cliente);
             this.overlayHidden = true;
-            this.modalContatos.open();
+            if (!this.formChamado.get('id')?.value) {
+              this.modalContatos.open();              
+            }
           }
         ).catch((erro) => { 
           this.overlayHidden = true;
