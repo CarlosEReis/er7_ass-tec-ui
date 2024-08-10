@@ -7,6 +7,7 @@ export class FilterDash {
   top!: number;
   dataInicial!: Date;
   dataFinal!: Date;
+  filtrarPor?: string;
 }
 
 @Injectable({
@@ -20,11 +21,22 @@ export class DashboardService {
 
   constructor(private http: HttpClient) { }
 
-  public kpisPrincipais(filter: FilterDash) : Observable<any[]>{
+  public kpisPrincipais(filter: FilterDash, tipoFiltro: string) : Observable<any[]>{
     const params = new HttpParams()
     .append("dataInicial", filter.dataInicial.toISOString().split('T')[0])
-    .append("dataFinal", filter.dataFinal.toISOString().split('T')[0]);
+    .append("dataFinal", filter.dataFinal.toISOString().split('T')[0])
+    .append("tipoFiltro", tipoFiltro);
     return this.http.get<any[]>(`${this.chamadosURL}/kpis-principal`, {params});
+  }
+
+  public kpisPrincipaisNEW(filter: FilterDash, tipoFiltro: string) : Observable<any[]>{
+    const params = new HttpParams()
+    .append("dataBase", filter.dataInicial.toISOString().split('T')[0])
+    .append("dataConfronto", filter.dataFinal.toISOString().split('T')[0])
+    .append("tipoFiltro", tipoFiltro);
+
+    console.log('headers', params)
+    return this.http.get<any[]>(`${this.chamadosURL}/kpis-principal-impl`, {params});
   }
 
   public qtdeItensAvaliados(filter: FilterDash) : Observable<any[]> {
@@ -34,27 +46,30 @@ export class DashboardService {
     return this.http.get<any[]>(`${this.chamadosURL}/itens-avaliados`, {params});
   }
 
-  public top4ProdutoDefeito(filter: FilterDash) : Observable<any[]> {
+  public top4ProdutoDefeito(filter: FilterDash, tipoFiltro: string ) : Observable<any[]> {
     const params = new HttpParams()
     .append("top", 4)
     .append("dataInicial", filter.dataInicial.toISOString().split('T')[0])
-    .append("dataFinal", filter.dataFinal.toISOString().split('T')[0]);
+    .append("dataFinal", filter.dataFinal.toISOString().split('T')[0])
+    .append("tipoFiltro", tipoFiltro);
     return this.http.get<any[]>(`${this.chamadosURL}/produtos/top-mais-defeitos`, {params});
   }
 
-  public topClientesComMaisChamados(filter: FilterDash) : Observable<any[]> {
+  public topClientesComMaisChamados(filter: FilterDash, tipoFiltro: string) : Observable<any[]> {
     const params = new HttpParams()
     .append("top", 3)
     .append("dataInicial", filter.dataInicial.toISOString().split('T')[0])
-    .append("dataFinal", filter.dataFinal.toISOString().split('T')[0]);
+    .append("dataFinal", filter.dataFinal.toISOString().split('T')[0])
+    .append("tipoFiltro", tipoFiltro);
     return this.http.get<any[]>(`${this.chamadosURL}/clientes/top-mais-chamados`, {params});
   }
 
-  public topTecnicosComMaisChamados(filter: FilterDash) : Observable<any[]> {
+  public topTecnicosComMaisChamados(filter: FilterDash, tipoFiltro: string) : Observable<any[]> {
     const params = new HttpParams()
     .append("top", 3)
     .append("dataInicial", filter.dataInicial.toISOString().split('T')[0])
-    .append("dataFinal", filter.dataFinal.toISOString().split('T')[0]);
+    .append("dataFinal", filter.dataFinal.toISOString().split('T')[0])
+    .append("tipoFiltro", tipoFiltro);
     return this.http.get<any[]>(`${this.chamadosURL}/tecnicos/top-mais-chamados`, {params});
   }
 
@@ -66,7 +81,7 @@ export class DashboardService {
     const params = new HttpParams()
     .append("dataInicial", filter.dataInicial.toISOString().split('T')[0])
     .append("dataFinal", filter.dataFinal.toISOString().split('T')[0])
-    .append("filtrarPor", "MES");
+    .append("filtrarPor", filter.filtrarPor ? filter.filtrarPor: "");
     return this.http.get<any[]>(`${this.chamadosURL}/chamados-abertos-fechados`, {params});
   }
 
@@ -75,6 +90,14 @@ export class DashboardService {
     .append("dataInicial", filter.dataInicial.toISOString().split('T')[0])
     .append("dataFinal", filter.dataFinal.toISOString().split('T')[0])
     .append("filtrarPor", "DIA");
+    return this.http.get<any[]>(`${this.chamadosURL}/chamados-abertos-fechados`, {params});
+  }
+
+  public statusAbertosFechados(filter: FilterDash, tipoFiltro: string): Observable<any[]> {
+    const params = new HttpParams()
+    .append("dataInicial", filter.dataInicial.toISOString().split('T')[0])
+    .append("dataFinal", filter.dataFinal.toISOString().split('T')[0])
+    .append("filtrarPor", tipoFiltro);
     return this.http.get<any[]>(`${this.chamadosURL}/chamados-abertos-fechados`, {params});
   }
 

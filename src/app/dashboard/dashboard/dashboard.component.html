@@ -1,48 +1,64 @@
-<po-page-default p-title="Dashboard de Chamados" >
+<po-page-default p-title="Dashboard de Chamados" [p-actions]="acoes">
 
     <po-container class="po-lg-12 po-p-0" id="dash">
 
         <po-widget class="po-lg-3 po-mb-1 po-pl-0">
             <po-container [p-no-border]="true">
-                <span class="po-icon po-icon-lock-off kpi-principal kpi-icon abertos po-lg-6" id="abertos"></span>
-                <div class="po-font-title po-text-right kpi-principal kpi-quant po-lg-6" style="font-family: roboto;">✅ {{  this.abertos }}</div>
-                <div class="po-text-right ">Chamados Abertos</div>
+                <span class="po-icon po-icon-lock-off kpi-principal kpi-icon abertos po-lg-5" id="abertos"></span>
+                <div class="po-text-right po-font-text-large-bold" style="color: #868686;">Chamados Abertos</div>
+                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">{{  this.abertos }}</div>
+                <div class="po-text-right po-lg-12" style="color: #035AA6;">
+                    <span class="po-text-right po-font-text-bold percent" [ngClass]="this.abertosPercent > 1 ? 'percent-positivo' : 'percent-negativo'"> {{ this.abertosPercent | number : '1.1-2' }} % </span>
+                    <span class="po-text-right"> Vs <b style="font-weight: bold;">{{ this.tipoFiltro }}</b> anterior</span>
+                </div>
             </po-container>
         </po-widget>
 
         <po-widget class="po-lg-3 po-mb-1" >
             <po-container [p-no-border]="true">
-                <span class="po-icon po-icon-refresh kpi-principal kpi-icon processando po-lg-6" id="processando"></span>
-                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">✅ {{ this.processando }}</div>
-                <div class="po-text-right sample-container-dashboard">Chamados Processando</div>
+                <span class="po-icon po-icon-refresh kpi-principal kpi-icon processando po-lg-5" id="processando"></span>
+                <div class="po-text-right po-font-text-large-bold" style="color: #868686;">Chamados Processando</div>
+                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">{{ this.processando }}</div>
+                <div class="po-text-right" style="color: #ea9b3e;">
+                    <span class="po-text-right po-font-text-bold percent" [ngClass]="this.processandoPercent > 1 ? 'percent-positivo' : 'percent-negativo'"> {{ this.processandoPercent | number: '1.1-2' }} % </span>
+                    <span class="po-text-right"> Vs <b style="font-weight: bold;">{{ this.tipoFiltro }}</b> anterior</span>
+                </div>
             </po-container>
         </po-widget>
 
         <po-widget class="po-lg-3 po-mb-1" >
             <po-container [p-no-border]="true">
-                <span class="po-icon po-icon-lock kpi-principal kpi-icon fechados po-lg-6" id="fechados"></span>
-                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">✅ {{ this.finalizados }}</div>
-                <div class="po-text-right sample-container-dashboard">Chamados Finalizados</div>
+                <span class="po-icon po-icon-lock kpi-principal kpi-icon fechados po-lg-5" id="fechados"></span>
+                <div class="po-text-right po-font-text-large-bold" style="color: #868686;">Chamados Finalizados</div>
+                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">{{ this.finalizados }}</div>
+                <div class="po-text-right" style="color: #439FD9;">
+                    <span class="po-text-right po-font-text-bold percent" [ngClass]="this.finalizadosPercent > 1 ? 'percent-positivo' : 'percent-negativo'"> {{ this.finalizadosPercent | number : '1.1-2' }} %</span>
+                    <span class="po-text-right"> Vs <b style="font-weight: bold;">{{ this.tipoFiltro }}</b> anterior</span>
+                </div>
             </po-container>
         </po-widget>
 
         <po-widget class="po-lg-3 po-mb-1 po-pr-0" >
             <po-container [p-no-border]="true">
                 <span class="po-icon po-icon-pushcart kpi-principal kpi-icon qtde-equipamentos po-lg-6" id="qtde-equipamentos"></span>
-                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">✅ {{ this.qtdeItensAvaliado }}</div>
-                <div class="po-text-right sample-container-dashboard">Equipamentos avaliados</div>
+                <div class="po-text-right po-font-text-large-bold" style="color: #868686;">Equis avaliados</div>  
+                <div class="po-font-title po-text-right kpi-principal kpi-quant" style="font-family: roboto;">{{ this.qtdeItensAvaliado }}</div>
+                <div class="po-text-right" style="color: #38B64B;">
+                    <span class="po-text-right po-font-text-bold"> {{ 0 }} </span>
+                    <span class="po-text-right"> Vs {{ this.tipoFiltro }} anterior</span>
+                </div>
             </po-container>
         </po-widget>
 
 
         <po-widget class="po-lg-9 po-mb-1 po-pl-0" style="position: relative;" >
 
-            <po-select style="position: absolute; top: .5rem; right: 1.5rem;"
+            <!-- <po-select style="position: absolute; top: .5rem; right: 1.5rem;"
                 name="city" 
                 [ngModel]="ano"
                 (p-change)="aoSelecionarAno($event)"
                 [p-options]="anos">
-          </po-select>
+            </po-select> -->
 
             <po-chart
                 class="po-md-12"

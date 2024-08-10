@@ -1,5 +1,4 @@
 .kpi-principal {
-    
     font-size: 2.5rem !important;
 }
 
@@ -36,4 +35,36 @@
 
 .po-icon.qtde-equipamentos::before {
     background-color: #38B64B;
+}
+
+
+.service-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.service-number {
+    font-size: large;
+    font-weight: bold;
+}
+.service-percentage.negative {
+    color: red; /* or any color indicating decrease */
+}
+
+.percent {
+    padding: .3rem;
+    border-radius: .5rem;
+    margin-right: .5rem;
+}
+
+.percent-positivo {
+    background-color: #7ec46b73;
+    color: #0b6208;
+    border: solid .15em #0b62083b;
+}
+
+.percent-negativo {
+    background-color: #c46b6b73;
+    color: #970808;
+    border: solid .15em #9708083b;
 }
