@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PoModalAction, PoModalComponent, PoNotificationService, PoPageAction, PoSelectOption, PoTableColumn } from '@po-ui/ng-components';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PoNotificationService, PoPageAction, PoSelectOption } from '@po-ui/ng-components';
 import { ClientesService } from '../clientes.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -38,9 +38,6 @@ export class ClienteFormComponent implements OnInit {
     this.clienteForm = this.configuraForm();
     this.tipoPessoa = this.carregaTipoPessoa();
     this.tipoCliente = this.carregaTipoCliente();
-
-    this.formContato = this.formContatoBuilder();
-    this.carregarColunasContatos()
   }
 
   public modoEdicao() : boolean {
@@ -61,14 +58,20 @@ export class ClienteFormComponent implements OnInit {
   }
 
   private buscarCliente(codigo: number) : void {
+    console.log(`Buscando cliente com código ${codigo}`);
+    
     this.overlayHidden = false;
     this.clienteService.buscar(codigo)
       .then((cliente: any) => {
-        this.carregaCliente(cliente)
+        this.carregaCliente(cliente);
+        
       })
       .catch()
-      .finally( () => this.overlayHidden = true );
+      .finally( () => {
+        this.overlayHidden = true
+      } );
   }
+
 
   private tituloPaginaEditandoOuVisualizando() {
     if (this.modoEdicao()) {
@@ -82,23 +85,18 @@ export class ClienteFormComponent implements OnInit {
 
   private carregaCliente(cliente: any) {
     this.clienteForm.patchValue(cliente);
-    cliente.contatos.forEach((contato: any, index: any) => {
-      let form = this.formContatoBuilder();
-      form.patchValue(contato);
-      form.get('index')?.setValue(index);
-      this.contatos.push(form);
-      this.tituloPaginaEditandoOuVisualizando();
-    })
   }
 
   public salvar() : void{
     if (this.clienteForm.valid) {
       this.overlayHidden = false;
-       
-        this.clienteService.adicionar(this.clienteForm.value)
+        const {tipoCliente, contribuinte, ...clienteData } = this.clienteForm.value;
+        this.clienteService.adicionar(clienteData)
         .then((cliente: any)=>{
           this.poNotificationService.success({message: `Cliente ${cliente.nome} adicionado com sucesso.`})
-          this.router.navigate(['app','clientes']);
+          console.log(cliente);
+          
+          this.router.navigate(['app','clientes', cliente.id, 'edicao']);
           this.overlayHidden = true;
         })
         .catch((reponse: any) => {
@@ -144,7 +142,6 @@ export class ClienteFormComponent implements OnInit {
         cidade: [ , Validators.required],
         estado: [ , Validators.required]
       }),
-      contatos: this.formBuilder.array([])
     })
   }
 
@@ -165,96 +162,6 @@ export class ClienteFormComponent implements OnInit {
     ];
   }
    
-
-
-  // ################ CONTATOS ################
-  @ViewChild(PoModalComponent, { static: true }) modalContato!: PoModalComponent;
-  tituloModalContato!: string;
-  formContato!: FormGroup;
-  colunasContatos!: PoTableColumn[];
-
-  get contatos() : FormArray{
-    return this.clienteForm.controls['contatos'] as FormArray;
-  }
-
-  private isEditandoContato(): boolean {
-    return this.formContato.get('index')?.value != null;
-  }
-
-  public adicionarContato() : PoModalAction{
-    return {
-      label: 'Adicionar',
-      action: () => {
-
-        if (this.isEditandoContato()) {
-          console.log('EDITAR');
-          const indexContato = this.formContato.get('index')?.value;
-          let f = this.formContatoBuilder();
-          f.patchValue(this.formContato.value);
-          this.contatos.at(indexContato).patchValue(f.value);
-          
-        } else {
-          console.log('ADICIONAR');
-          this.contatos.push(this.formBuilder.group(this.formContato.value));
-        }
-
-        console.log(this.formContato.value);
-        this.modalContato.close();
-      }
-    }
-  }
-
-  fecharModalContato() : PoModalAction {
-    return {
-      label: 'Fechar',
-      action: () => this.modalContato.close()
-    }
-  }
-
-  public novoContato() {
-    this.tituloModalContato = 'Novo Contato';
-    this.formContato = this.formContatoBuilder();
-    this.modalContato.open();
-  }
-
-  private formContatoBuilder() : FormGroup {
-    return this.formBuilder.group({
-      index: [],
-      id:[],
-      nome: [],
-      email: [],
-      telefone: [],
-      departamento: [],
-      acoes: ['editar']
-    })
-  }
-
-  private carregarColunasContatos() : void {
-    this.colunasContatos = [
-      { label: 'Nome', property: 'nome' },
-      { label: 'E-mail', property: 'email' },
-      { label: 'Telefone', property: 'telefone' },
-      { label: 'Departamento', property: 'departamento' },
-      { label: 'Ações', property: 'acoes', type: 'icon', icons: 
-        [
-          { 
-            action: (rowIndex: any) => { this.editarContato(rowIndex) },
-            icon: 'po-icon-export' ,
-            tooltip: 'Editar' ,
-            value: 'editar' 
-          }
-        ]
-      }
-    ]
-  }
-
-  editarContato(value: any) {
-    this.tituloModalContato = `Editando contato`;
-    this.formContatoBuilder();
-    this.formContato.patchValue(value);
-    this.modalContato.open();
-  }
-
   private isClientFormValid() : boolean {
     return !this.clienteForm.valid;
   }
