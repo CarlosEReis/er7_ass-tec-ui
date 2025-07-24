@@ -36,4 +36,19 @@ export class ClientesService {
       this.http.get(`${this.clientesURL}/${codigo}`)
     );
   }
+
+  public buscarContatos(clienteId: number): Promise<any> {
+    return firstValueFrom(
+      this.http.get(`${this.clientesURL}/${clienteId}/contatos`)
+    );
+  }
+
+  public atualizarContato(clienteId: number, contatoId: number, contato: any): Promise<any> {
+    return firstValueFrom(
+      this.http.put(`${this.clientesURL}/${clienteId}/contatos/${contatoId}`, contato)
+    );
+  }
+  
+
+
 }
