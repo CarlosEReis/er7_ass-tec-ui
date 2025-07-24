@@ -1,0 +1,29 @@
+<div class="po-row po-mb-1">
+    <po-button p-label="Contato" p-icon="po-icon po-icon-plus" p-kind="primary" (p-click)="novoContato()"></po-button>
+</div>
+
+<po-table class="po-md-12 po-pl-0 po-pr-0" [p-columns]="colunasContatos" [p-items]="contatos" [p-striped]="true"
+    [p-hide-columns-manager]="true">
+</po-table>
+
+<form [formGroup]="formContato">
+
+  <po-modal 
+    #modal 
+    p-size="md"
+    [p-title]="tituloModalContato"
+    [p-primary-action]="salvarContato()"
+    [p-secondary-action]="fecharModalContato()">
+
+    <div class="po-row po-mb-1">
+      <po-input name="nome" formControlName="nome" p-label="Nome" class="po-md-7"></po-input>
+      <po-input name="email" formControlName="email" p-label="E-mail" class="po-md-5"></po-input>
+    </div>
+    <div class="po-row">
+      <po-input name="telefone" formControlName="telefone" p-label="Telefone" class="po-md-6"></po-input>
+      <po-input name="departamento" formControlName="departamento" p-label="Departamento" class="po-md-6"></po-input>
+    </div>
+
+  </po-modal>
+
+</form>

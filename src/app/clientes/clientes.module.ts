@@ -7,12 +7,14 @@ import { PoFieldModule, PoModule, PoNotificationModule, PoTabsModule } from '@po
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ClientesPesquisaComponent } from './clientes-pesquisa/clientes-pesquisa.component';
+import { ContatosComponent } from './contatos/contatos.component';
 
 
 @NgModule({
   declarations: [
     ClienteFormComponent,
-    ClientesPesquisaComponent
+    ClientesPesquisaComponent,
+    ContatosComponent
   ],
   imports: [
     CommonModule,
